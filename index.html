@@ -2,353 +2,2658 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>حاسبة إنتاج قسم الليزر</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f97316">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>حاسبة إنتاج قسم الليزر | لوحة تحكم المصنع</title>
+  
+  <!-- Google Fonts: Cairo & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ========================================================
+       CSS VARIABLES & THEMES
+       ======================================================== */
     :root {
-      --bg: #f5f6f8;
-      --panel: #ffffff;
-      --panel-2: #f8f9fb;
-      --line: #e2e5ea;
-      --text: #1a1d23;
-      --text-dim: #6b7280;
+      --bg: #0b0f17;
+      --bg-surface: #111827;
+      --bg-card: #1a2234;
+      --bg-card-hover: #222d44;
+      --bg-input: #0f172a;
+      --border: #2a374f;
+      --border-focus: #f97316;
+      
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
       --laser: #f97316;
-      --laser-dim: rgba(249, 115, 22, 0.12);
-      --denim: #3b82f6;
-      --denim-dim: rgba(59, 130, 246, 0.12);
+      --laser-glow: rgba(249, 115, 22, 0.25);
+      --laser-gradient: linear-gradient(135deg, #fb923c, #ea580c);
+      
+      --denim: #38bdf8;
+      --denim-dark: #0284c7;
+      --denim-dim: rgba(56, 189, 248, 0.12);
+      
+      --success: #10b981;
+      --success-dim: rgba(16, 185, 129, 0.12);
       --danger: #ef4444;
       --danger-dim: rgba(239, 68, 68, 0.12);
-      --ok: #10b981;
-      --radius: 16px;
-      --font-display: 'Segoe UI Semibold', 'Segoe UI', system-ui, -apple-system, sans-serif;
-      --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      --font-mono: 'SF Mono', 'Consolas', 'Courier New', monospace;
-      --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.12);
+      --warning: #f59e0b;
+      --warning-dim: rgba(245, 158, 11, 0.12);
+      
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.25);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --shadow-laser: 0 4px 20px rgba(249, 115, 22, 0.35);
+      
+      --font-main: 'Cairo', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
-    * { box-sizing: border-box; }
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
+
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --bg-input: #f8fafc;
+      --border: #e2e8f0;
+      --border-focus: #ea580c;
+      
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      
+      --laser: #ea580c;
+      --laser-glow: rgba(234, 88, 12, 0.15);
+      --laser-gradient: linear-gradient(135deg, #f97316, #ea580c);
+      
+      --denim: #0284c7;
+      --denim-dark: #0369a1;
+      --denim-dim: rgba(2, 132, 199, 0.08);
+      
+      --success: #059669;
+      --success-dim: rgba(5, 150, 105, 0.1);
+      --danger: #dc2626;
+      --danger-dim: rgba(220, 38, 38, 0.1);
+      --warning: #d97706;
+      --warning-dim: rgba(217, 119, 6, 0.1);
+      
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-laser: 0 4px 16px rgba(234, 88, 12, 0.25);
+    }
+
+    /* ========================================================
+       BASE & RESET
+       ======================================================== */
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 24px 16px 60px;
-      max-width: 720px;
-      margin-inline: auto;
-      line-height: 1.6;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
-    .header-block { text-align: center; margin-bottom: 28px; }
-    .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; color: var(--laser); margin: 0 0 8px; text-transform: uppercase; }
-    h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin: 0; color: var(--text); }
-    .laser-line { height: 3px; width: 0%; margin: 16px auto 0; background: linear-gradient(90deg, transparent, var(--laser), transparent); animation: sweep 1.1s cubic-bezier(.2,.8,.2,1) forwards; border-radius: 3px; }
-    @keyframes sweep { to { width: 90%; } }
-    @media (prefers-reduced-motion: reduce) { .laser-line { animation: none; width: 90%; } }
-    label { font-size: 13px; color: var(--text-dim); display: block; margin-bottom: 6px; font-weight: 500; }
-    input, select { width: 100%; height: 46px; border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; font-size: 15px; background: #fff; color: var(--text); font-family: inherit; transition: all .2s ease; }
-    input::placeholder { color: #9ca3af; }
-    input:focus, select:focus { outline: none; border-color: var(--laser); box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15); }
-    input[type="time"] { color-scheme: light; }
-    .card { background: var(--panel); border-radius: var(--radius); border: 1px solid var(--line); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .row-gap { margin-bottom: 16px; }
-    .section-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin: 0 0 16px; color: var(--text); display: flex; align-items: center; gap: 10px; }
-    .section-title::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--laser); box-shadow: 0 0 10px var(--laser); flex-shrink: 0; }
-    .elapsed { font-size: 13px; color: var(--text-dim); margin: 12px 0 0; font-family: var(--font-mono); }
-    .elapsed b { color: var(--laser); font-weight: 600; }
-    .machine-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden; box-shadow: var(--shadow); transition: box-shadow .2s ease; }
-    .machine-card:hover { box-shadow: var(--shadow-lg); }
-    .machine-card::before { content: ''; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--denim), var(--laser)); }
-    .machine-title { font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: 1px; margin: 0 0 14px; color: var(--denim); display: flex; align-items: center; gap: 10px; }
-    .machine-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--denim); box-shadow: 0 0 8px var(--denim); }
-    .field { margin-bottom: 12px; }
-    .field:last-child { margin-bottom: 0; }
-    .down-row { display: flex; gap: 8px; }
-    .down-row input { width: 100%; }
-    .divider { height: 1px; background: var(--line); margin: 18px 0; border: none; }
-    .field-group-title { font-size: 13px; color: var(--text-dim); font-weight: 600; margin: 0 0 12px; }
-    .secToggleBtn { width: 100%; height: 44px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); font-size: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; margin-top: 6px; border-radius: 10px; transition: all .2s ease; cursor: pointer; }
-    .secToggleBtn:hover { background: #f0f2f5; }
-    .secToggleVal { font-family: var(--font-mono); color: var(--text); display: flex; align-items: center; gap: 8px; }
-    .secToggleVal .chev { color: var(--denim); transition: transform .2s ease; font-size: 16px; }
-    .secToggleBtn.open .chev { transform: rotate(90deg); }
-    .secPanel { display: none; background: var(--panel-2); border: 1px solid var(--line); border-top: none; border-radius: 0 0 10px 10px; padding: 16px; margin-bottom: 6px; }
-    .secPanel.open { display: block; animation: slideDown .25s ease; }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-    .client-entry { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow); }
-    .client-entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .client-entry input { height: 42px; font-size: 14px; }
-    .client-entry-foot { display: flex; gap: 8px; align-items: center; }
-    .client-entry-foot input { flex: 1; }
-    .removeClientBtn { height: 42px; width: 46px; min-width: 46px; padding: 0; background: var(--danger-dim); color: var(--danger); font-size: 20px; line-height: 1; border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: all .2s ease; }
-    .removeClientBtn:hover { background: var(--danger); color: #fff; }
-    button { height: 48px; border-radius: 12px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s ease; }
-    button:active { transform: scale(0.98); }
-    #calcBtn { width: 100%; background: var(--laser); color: #fff; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3); }
-    #calcBtn:hover { background: #ea580c; }
-    #printBtn { width: 100%; background: transparent; color: var(--denim); border: 1px solid var(--denim); }
-    #printBtn:hover { background: var(--denim-dim); }
-    .addClientBtn { height: 42px; font-size: 14px; background: transparent; color: var(--denim); width: 100%; border: 1px dashed var(--denim); margin-top: 4px; border-radius: 8px; cursor: pointer; transition: all .2s ease; }
-    .addClientBtn:hover { background: var(--denim-dim); }
-    .shift-badge { font-family: var(--font-mono); font-size: 13px; color: var(--laser); background: var(--laser-dim); display: inline-block; padding: 6px 16px; border-radius: 20px; margin: 0 0 14px; }
-    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
-    .stat { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px; text-align: center; box-shadow: var(--shadow); }
-    .stat-label { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
-    .stat-value { font-family: var(--font-mono); font-size: 34px; font-weight: 700; color: var(--laser); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--line); }
-    th { color: var(--text-dim); font-weight: 600; font-size: 12px; }
-    td:first-child, th:first-child { text-align: right; }
-    td { color: var(--text); }
-    tr:last-child td { border-bottom: none; }
-    .footer-note { text-align: center; font-size: 11px; color: #9ca3af; margin-top: 24px; font-family: var(--font-mono); letter-spacing: 0.5px; }
-    .save-indicator { position: fixed; top: 16px; left: 16px; background: var(--ok); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; opacity: 0; transition: opacity .3s ease; z-index: 100; }
-    .save-indicator.show { opacity: 1; }
-    @media (max-width: 480px) {
-      .grid3 { grid-template-columns: 1fr; }
-      .grid2 { grid-template-columns: 1fr; }
-      .results-grid { grid-template-columns: 1fr; }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 12px 10px 110px;
+      max-width: 820px;
+      margin: 0 auto;
+      min-height: 100vh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ========================================================
+       TOP HEADER & NAV
+       ======================================================== */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 4px 2px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--laser-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-laser);
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 11.5px;
+      color: var(--laser);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover, .icon-btn:active {
+      color: var(--text);
+      border-color: var(--laser);
+      background: var(--bg-card-hover);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ========================================================
+       TOAST / NOTIFICATION
+       ======================================================== */
+    .toast-msg {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: var(--bg-surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-msg.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* ========================================================
+       CARDS & CONTAINERS
+       ======================================================== */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title svg {
+      width: 17px;
+      height: 17px;
+      color: var(--laser);
+    }
+
+    /* ========================================================
+       FORM CONTROLS & INPUTS
+       ======================================================== */
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      height: 44px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0 12px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      transition: all 0.2s ease;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 10px center;
+      background-size: 14px;
+      padding-left: 32px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--laser-glow);
+    }
+
+    input[type="time"] {
+      font-family: var(--font-mono);
+      font-size: 14.5px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.5px;
+      padding: 0 6px;
+    }
+
+    input[type="number"] {
+      font-family: var(--font-mono);
+      font-size: 14.5px;
+      font-weight: 600;
+      direction: ltr;
+      text-align: center;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Responsive Time Grid: 3 columns on large, smart 2-col stack on mobile */
+    .time-grid-responsive {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 540px) {
+      .time-grid-responsive {
+        grid-template-columns: 1fr 1fr;
+      }
+      .time-grid-responsive .form-group:first-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .time-grid-responsive {
+        grid-template-columns: 1fr;
+      }
+      .time-grid-responsive .form-group:first-child {
+        grid-column: span 1;
+      }
+    }
+
+    /* ========================================================
+       SHIFT PRESET PILLS / BUTTONS
+       ======================================================== */
+    .shift-presets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 340px) {
+      .shift-presets {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preset-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .preset-pill span.sub {
+      font-size: 10.5px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    .preset-pill:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--denim);
+    }
+
+    .preset-pill.active {
+      background: var(--denim-dim);
+      border-color: var(--denim);
+      color: var(--denim);
+    }
+
+    .preset-pill.active span.sub {
+      color: var(--denim);
+    }
+
+    /* ========================================================
+       LIVE SHIFT STATUS BANNER
+       ======================================================== */
+    .shift-summary-ribbon {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    .ribbon-item {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+      padding: 0 2px;
+    }
+
+    .ribbon-item:not(:last-child) {
+      border-inline-end: 1px solid var(--border);
+    }
+
+    .ribbon-label {
+      color: var(--text-dim);
+      margin-bottom: 2px;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+
+    .ribbon-value {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--laser);
+      white-space: nowrap;
+    }
+
+    .ribbon-value.ok {
+      color: var(--success);
+    }
+
+    .ribbon-value.warning {
+      color: var(--warning);
+    }
+
+    /* ========================================================
+       MACHINE NAVIGATION TABS (MOBILE OPTIMIZED)
+       ======================================================== */
+    .machine-tabs {
+      display: flex;
+      gap: 5px;
+      overflow-x: auto;
+      padding: 2px 2px 8px;
+      margin-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    .machine-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 66px;
+      height: 38px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      padding: 0 8px;
+      scroll-snap-align: start;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--border-focus);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--laser-gradient);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: var(--shadow-laser);
+    }
+
+    .tab-badge {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .tab-btn:not(.active) .tab-badge {
+      background: var(--bg-input);
+      color: var(--text-dim);
+    }
+
+    /* ========================================================
+       MACHINE CARD
+       ======================================================== */
+    .machine-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .machine-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      inset-inline-start: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--denim), var(--laser));
+    }
+
+    .machine-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .machine-name-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--denim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-main);
+    }
+
+    .machine-name-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--denim);
+      box-shadow: 0 0 8px var(--denim);
+      display: inline-block;
+    }
+
+    .machine-status-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--bg-input);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    /* Base Leg Time Stepper */
+    .stepper-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stepper-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .stepper-controls {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .step-btn:hover, .step-btn:active {
+      background: var(--laser);
+      color: #fff;
+      border-color: var(--laser);
+    }
+
+    .stepper-controls input {
+      width: 52px;
+      height: 32px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0;
+    }
+
+    /* Quick Stoppages Sync Banner */
+    .quick-sync-box {
+      background: var(--denim-dim);
+      border: 1px dashed var(--denim);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .quick-sync-box p {
+      font-size: 11.5px;
+      color: var(--denim);
+      font-weight: 600;
+    }
+
+    .sync-btn {
+      background: var(--denim);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .sync-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Accordion / Section Drawer */
+    .drawer-btn {
+      width: 100%;
+      height: 42px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--denim);
+    }
+
+    .drawer-btn .drawer-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--laser);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .drawer-btn .chev {
+      font-size: 13px;
+      transition: transform 0.25s ease;
+      color: var(--text-dim);
+    }
+
+    .drawer-btn.open {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-color: var(--border-focus);
+      background: var(--bg-card-hover);
+    }
+
+    .drawer-btn.open .chev {
+      transform: rotate(90deg);
+      color: var(--laser);
+    }
+
+    .drawer-content {
+      display: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .drawer-content.open {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Client Entry Box */
+    .client-entry {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .client-entry:last-child {
+      margin-bottom: 10px;
+    }
+
+    .client-entry-row1 {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .client-entry-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 38px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    @media (max-width: 360px) {
+      .client-entry-row1 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .del-client-btn {
+      width: 38px;
+      height: 40px;
+      background: var(--danger-dim);
+      color: var(--danger);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .del-client-btn:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .add-client-btn {
+      width: 100%;
+      height: 38px;
+      background: var(--denim-dim);
+      color: var(--denim);
+      border: 1px dashed var(--denim);
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .add-client-btn:hover {
+      background: var(--denim);
+      color: #fff;
+    }
+
+    /* Stoppage Subgroups */
+    .stoppage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 360px) {
+      .stoppage-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================================
+       STICKY BOTTOM ACTION BAR (FOR MOBILE EXCELLENCE)
+       ======================================================== */
+    .bottom-action-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(17, 24, 39, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 8px));
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+      z-index: 900;
+      display: flex;
+      gap: 8px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    [data-theme="light"] .bottom-action-bar {
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .btn-main-calc {
+      flex: 2;
+      height: 46px;
+      background: var(--laser-gradient);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-laser);
+      transition: all 0.2s ease;
+    }
+
+    .btn-main-calc:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      height: 46px;
+      background: var(--bg-card);
+      color: var(--denim);
+      border: 1px solid var(--denim);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--denim-dim);
+    }
+
+    .btn-secondary svg, .btn-main-calc svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    /* ========================================================
+       RESULTS & KPI DASHBOARD
+       ======================================================== */
+    #resultsContainer {
+      display: none;
+      margin-top: 18px;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card.hero {
+      background: linear-gradient(145deg, var(--bg-card), var(--bg-card-hover));
+      border-color: var(--laser);
+    }
+
+    .kpi-card.hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--laser-gradient);
+    }
+
+    .kpi-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .kpi-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .kpi-num {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--laser);
+      line-height: 1.1;
+    }
+
+    .kpi-num.denim {
+      color: var(--denim);
+    }
+
+    .kpi-num.success {
+      color: var(--success);
+    }
+
+    .kpi-num.warning {
+      color: var(--warning);
+    }
+
+    .kpi-unit {
+      font-size: 10.5px;
+      color: var(--text-dim);
+      font-family: var(--font-main);
+      font-weight: 600;
+    }
+
+    /* Result Tables */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-top: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: center;
+      background: var(--bg-surface);
+      white-space: nowrap;
+    }
+
+    th {
+      background: var(--bg-input);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 11.5px;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+    }
+
+    td.text-cell {
+      font-family: var(--font-main);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    tfoot td {
+      font-weight: 800;
+      background: var(--bg-input);
+      border-top: 2px solid var(--border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-main);
+    }
+
+    .tag-badge.laser {
+      background: var(--laser-glow);
+      color: var(--laser);
+    }
+
+    .tag-badge.denim {
+      background: var(--denim-dim);
+      color: var(--denim);
+    }
+
+    /* Production Share Bars */
+    .machine-bars {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+    }
+
+    .bar-label {
+      width: 58px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 7px;
+      background: var(--bg-input);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--laser-gradient);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    .bar-val {
+      width: 65px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Result Action Buttons */
+    .export-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-action-outline {
+      height: 42px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-outline:hover {
+      border-color: var(--laser);
+      color: var(--laser);
+    }
+
+    .btn-action-outline.whatsapp {
+      border-color: #25D366;
+      color: #25D366;
+    }
+
+    .btn-action-outline.whatsapp:hover {
+      background: rgba(37, 211, 102, 0.1);
+    }
+
+    /* ========================================================
+       MODAL STYLES (CONFIRMATION)
+       ======================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+
+    .modal-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      height: 42px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+
+    .modal-btn.cancel {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .modal-btn.confirm {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* ========================================================
+       PRINT FORMATTING (@media print - 1-Page A4 Precision)
+       ======================================================== */
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        font-size: 11px !important;
+      }
+
+      /* Hide All Web & Input Elements */
+      .app-header,
+      #shiftSettingsCard,
+      .machine-tabs,
+      .quick-sync-box,
+      #machinesSection,
+      .bottom-action-bar,
+      .export-grid,
+      .toast-msg,
+      .modal-backdrop,
+      .icon-btn,
+      .step-btn,
+      .add-client-btn,
+      .del-client-btn,
+      .machine-bars,
+      .card-header svg {
+        display: none !important;
+      }
+
+      #resultsContainer {
+        display: block !important;
+        margin-top: 0 !important;
+      }
+
+      .card {
+        border: 1px solid #777777 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        border-radius: 6px !important;
+        padding: 8px 10px !important;
+        margin-bottom: 8px !important;
+        break-inside: avoid;
+      }
+
+      .card-header {
+        margin-bottom: 6px !important;
+        padding-bottom: 4px !important;
+        border-bottom: 1px solid #ccc !important;
+      }
+
+      .card-title {
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+      }
+
+      .tag-badge {
+        border: 1px solid #666 !important;
+        color: #000 !important;
+        background: #f0f0f0 !important;
+      }
+
+      /* KPI Print Grid */
+      .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .kpi-card {
+        border: 1px solid #aaaaaa !important;
+        background: #fafafa !important;
+        box-shadow: none !important;
+        padding: 6px 4px !important;
+        border-radius: 4px !important;
+      }
+
+      .kpi-icon {
+        display: none !important;
+      }
+
+      .kpi-title {
+        font-size: 10px !important;
+        color: #333333 !important;
+        font-weight: bold !important;
+      }
+
+      .kpi-num {
+        color: #000000 !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+      }
+
+      .kpi-unit {
+        font-size: 9px !important;
+        color: #555555 !important;
+      }
+
+      /* Print Tables */
+      .table-responsive {
+        border: 1px solid #888888 !important;
+        border-radius: 4px !important;
+        margin-top: 4px !important;
+      }
+
+      table {
+        background: #ffffff !important;
+        font-size: 11px !important;
+      }
+
+      th {
+        background: #e5e7eb !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+        padding: 5px 6px !important;
+        border: 1px solid #9ca3af !important;
+      }
+
+      td {
+        color: #000000 !important;
+        padding: 4px 6px !important;
+        border: 1px solid #d1d5db !important;
+      }
+
+      tfoot td {
+        font-weight: 800 !important;
+        background: #f3f4f6 !important;
+        border-top: 2px solid #000000 !important;
+        color: #000000 !important;
+      }
+
+      /* Official Factory Print Header */
+      .print-header {
+        display: block !important;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 6px;
+      }
+
+      .print-brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+
+      .print-factory-name h2 {
+        font-size: 18px;
+        font-weight: 900;
+        color: #000000;
+        line-height: 1.2;
+      }
+
+      .print-factory-name p {
+        font-size: 11px;
+        color: #444444;
+        font-weight: 600;
+      }
+
+      .print-meta-badge {
+        border: 1.5px solid #000000;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 12px;
+        background: #f4f4f5;
+      }
+
+      .print-meta-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1.2fr 1fr;
+        gap: 8px;
+        background: #f8fafc;
+        border: 1px solid #cccccc;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      /* Print Signatures Footer */
+      .print-footer {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+        padding-top: 8px;
+        border-top: 1px dashed #666666;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .print-footer div {
+        text-align: center;
+        width: 30%;
+      }
+    }
+
+    .print-header, .print-footer {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="save-indicator" id="saveIndicator">✓ تم الحفظ</div>
 
-  <div class="header-block">
-    <p class="eyebrow">قسم الليزر · لوحة تحكم الإنتاج</p>
-    <h1>حاسبة إنتاج الليزر</h1>
-    <div class="laser-line"></div>
+  <!-- Toast Notification -->
+  <div class="toast-msg" id="toast">
+    <span id="toastIcon">✓</span>
+    <span id="toastText">تم الحفظ تلقائياً</span>
   </div>
 
-  <div class="card">
-    <div class="row-gap">
-      <label>الوردية</label>
-      <select id="shiftPreset">
-        <option value="10-morning">نظام 10 ساعات - صباحي (8 ص - 6 م)</option>
-        <option value="10-evening">نظام 10 ساعات - مسائي (6 م - 4 ص)</option>
-        <option value="12-morning">نظام 12 ساعة - صباحي (8 ص - 8 م)</option>
-        <option value="12-evening">نظام 12 ساعة - مسائي (8 م - 8 ص)</option>
-      </select>
+  <!-- Official Print Only Header -->
+  <div class="print-header">
+    <div class="print-brand-row">
+      <div class="print-factory-name">
+        <h2>تقرير إنتاج قسم الليزر اليومي</h2>
+        <p>مصنع تشغيل وتجهيز الملابس الجاهزة والجينز</p>
+      </div>
+      <div class="print-meta-badge" id="printShiftBadge">10 ساعات صباحي</div>
     </div>
-    <div class="grid3 row-gap">
-      <div><label>بدأ الشغل</label><input type="time" id="startTime" value="08:00"></div>
-      <div><label>نهاية الوردية المفروضة</label><input type="time" id="shiftEndTime" value="18:00"></div>
-      <div><label>خروج العمال الفعلي</label><input type="time" id="actualEndTime" value="18:00"></div>
+    <div class="print-meta-grid">
+      <div class="print-meta-item">
+        <strong>📅 التاريخ:</strong> <span id="printDateText">-</span>
+      </div>
+      <div class="print-meta-item">
+        <strong>⏰ المواعيد:</strong> <span id="printShiftTimes">08:00 إلى 18:00</span>
+      </div>
+      <div class="print-meta-item">
+        <strong>⏱️ التشغيل الفعلي:</strong> <span id="printActualDuration">10 ساعات</span>
+      </div>
     </div>
-    <p class="elapsed">زمن الوردية: <b id="shiftDurationLabel">-</b> | الخروج المبكر: <b id="earlyLeaveLabel">-</b> | الزمن الفعلي: <b id="elapsedLabel">-</b></p>
   </div>
 
-  <div class="card">
-    <p class="section-title">الماكينات</p>
-    <div id="machines"></div>
-  </div>
-
-  <button id="calcBtn">احسب الإنتاج</button>
-  <button id="printBtn">طباعة التقرير</button>
-
-  <div id="results" style="display:none;">
-    <p class="shift-badge" id="shiftLabel"></p>
-    <div class="results-grid">
-      <div class="stat"><div class="stat-label">إجمالي البناطيل</div><div class="stat-value" id="totalPants">-</div></div>
-      <div class="stat"><div class="stat-label">الإنتاج بالساعة</div><div class="stat-value" id="perHour">-</div></div>
+  <!-- Main App Header -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">حاسبة إنتاج الليزر</h1>
+        <p class="brand-subtitle">لوحة تحكم وتتبع الوردية اليومية</p>
+      </div>
     </div>
-    <div class="card"><table id="detailTable"></table></div>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" id="themeToggleBtn" title="تبديل المظهر">
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+      <button type="button" class="icon-btn" id="resetBtn" title="تفريغ الوردية">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Shift Settings Card -->
+  <section class="card" id="shiftSettingsCard">
+    <div class="card-header">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        إعدادات الوردية
+      </div>
+      <span class="tag-badge laser" id="activeShiftBadge">10 س صباحي</span>
+    </div>
+
+    <!-- Quick Shift Presets -->
+    <div class="shift-presets">
+      <button type="button" class="preset-pill active" data-preset="10-morning" data-start="08:00" data-end="18:00">
+        ☀️ 10 ساعات صباحي
+        <span class="sub">08:00 ص - 06:00 م</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="10-evening" data-start="18:00" data-end="04:00">
+        🌙 10 ساعات مسائي
+        <span class="sub">06:00 م - 04:00 ص</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="12-morning" data-start="08:00" data-end="20:00">
+        ☀️ 12 ساعة صباحي
+        <span class="sub">08:00 ص - 08:00 م</span>
+      </button>
+      <button type="button" class="preset-pill" data-preset="12-evening" data-start="20:00" data-end="08:00">
+        🌙 12 ساعة مسائي
+        <span class="sub">08:00 م - 08:00 ص</span>
+      </button>
+    </div>
+
+    <!-- Time Inputs Grid: Responsive with clear visual order -->
+    <div class="time-grid-responsive">
+      <div class="form-group">
+        <label for="startTime">بدأ الشغل</label>
+        <input type="time" id="startTime" value="08:00">
+      </div>
+      <div class="form-group">
+        <label for="shiftEndTime">نهاية الوردية</label>
+        <input type="time" id="shiftEndTime" value="18:00">
+      </div>
+      <div class="form-group">
+        <label for="actualEndTime">الخروج الفعلي</label>
+        <input type="time" id="actualEndTime" value="18:00">
+      </div>
+    </div>
+
+    <!-- Live Shift Duration Ribbon -->
+    <div class="shift-summary-ribbon">
+      <div class="ribbon-item">
+        <div class="ribbon-label">زمن الوردية</div>
+        <div class="ribbon-value" id="shiftDurationLabel">10:00 س</div>
+      </div>
+      <div class="ribbon-item">
+        <div class="ribbon-label">الخروج المبكر</div>
+        <div class="ribbon-value" id="earlyLeaveLabel">0 د</div>
+      </div>
+      <div class="ribbon-item">
+        <div class="ribbon-label">الزمن الفعلي</div>
+        <div class="ribbon-value ok" id="elapsedLabel">10:00 س</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Machine Quick Filter / Segmented Tabs for Mobile Navigation -->
+  <div class="machine-tabs" id="machineTabs">
+    <button type="button" class="tab-btn active" data-filter="all">
+      الكل <span class="tab-badge">4</span>
+    </button>
+    <button type="button" class="tab-btn" data-filter="0">
+      ماكينة 1 <span class="tab-badge" id="badgeM0">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-filter="1">
+      ماكينة 2 <span class="tab-badge" id="badgeM1">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-filter="2">
+      ماكينة 3 <span class="tab-badge" id="badgeM2">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-filter="3">
+      ماكينة 4 <span class="tab-badge" id="badgeM3">0</span>
+    </button>
   </div>
 
-  <div id="clientResults" style="display:none;">
+  <!-- Global Quick Stoppages Sync Banner -->
+  <div class="quick-sync-box">
+    <div>
+      <p>💡 ضبط الراحة وسحب الغاز لكل الماكينات؟</p>
+    </div>
+    <button type="button" class="sync-btn" id="syncStoppagesBtn">تطبيق على الكل</button>
+  </div>
+
+  <!-- Machines Container -->
+  <div id="machinesSection">
+    <div id="machinesList"></div>
+  </div>
+
+  <!-- Results Section -->
+  <section id="resultsContainer">
     <div class="card">
-      <p class="section-title">تفصيل حسب العميل (الإنتاج الفعلي بعد خصم التوقفات)</p>
-      <table id="clientDetailTable"></table>
+      <div class="card-header">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 20V10"></path>
+            <path d="M12 20V4"></path>
+            <path d="M6 20v-6"></path>
+          </svg>
+          ملخص إنتاج الوردية
+        </div>
+        <span class="tag-badge denim" id="resShiftTag">10 ساعات</span>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card hero">
+          <span class="kpi-icon">👖</span>
+          <div class="kpi-title">إجمالي البناطيل</div>
+          <div class="kpi-num" id="kpiTotalPants">0</div>
+          <div class="kpi-unit">بنطلون</div>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-icon">⚡</span>
+          <div class="kpi-title">المعدل بالساعة</div>
+          <div class="kpi-num denim" id="kpiPerHour">0</div>
+          <div class="kpi-unit">بنطلون / س</div>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-icon">🎯</span>
+          <div class="kpi-title">كفاءة التشغيل</div>
+          <div class="kpi-num success" id="kpiEfficiency">0%</div>
+          <div class="kpi-unit">نسبة الوقت الصافي</div>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-icon">⏱️</span>
+          <div class="kpi-title">إجمالي التوقفات</div>
+          <div class="kpi-num warning" id="kpiTotalDown">0 د</div>
+          <div class="kpi-unit">مجموع الماكينات</div>
+        </div>
+      </div>
+
+      <!-- Machine Contribution Progress Bars -->
+      <div class="machine-bars" id="machineBarsContainer"></div>
+    </div>
+
+    <!-- Machine Detail Table Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          تفاصيل إنتاج الماكينات
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table id="detailTable">
+          <thead>
+            <tr>
+              <th>الماكينة</th>
+              <th>زمن الجنب</th>
+              <th>التوقف</th>
+              <th>الصافي</th>
+              <th>الإنتاج</th>
+              <th>معدل/س</th>
+            </tr>
+          </thead>
+          <tbody id="detailTableBody"></tbody>
+          <tfoot id="detailTableFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Client Detail Table Card (Shows if any clients exist) -->
+    <div class="card" id="clientResultsCard" style="display: none;">
+      <div class="card-header">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          تفصيل إنتاج العملاء
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table id="clientDetailTable">
+          <thead>
+            <tr>
+              <th>العميل</th>
+              <th>الماكينة</th>
+              <th>الفترة</th>
+              <th>زمن الجنب</th>
+              <th>توقف مخصوم</th>
+              <th>الصافي</th>
+              <th>البناطيل</th>
+            </tr>
+          </thead>
+          <tbody id="clientTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Export & Share Actions Grid -->
+    <div class="export-grid">
+      <button type="button" class="btn-action-outline whatsapp" id="shareWhatsappBtn">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.073.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.155.57 4.178 1.564 5.928l-1.664 6.072 6.22-1.632c1.705.932 3.659 1.464 5.736 1.464 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        مشاركة واتساب
+      </button>
+
+      <button type="button" class="btn-action-outline" id="printReportBtn">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        طباعة التقرير
+      </button>
+    </div>
+  </section>
+
+  <!-- Sticky Bottom Action Bar -->
+  <div class="bottom-action-bar">
+    <button type="button" class="btn-main-calc" id="calcBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+      احسب الإنتاج
+    </button>
+    <button type="button" class="btn-secondary" id="quickPrintBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      طباعة
+    </button>
+  </div>
+
+  <!-- Print Only Footer / Official Sign-offs -->
+  <div class="print-footer">
+    <div>
+      <p style="margin-bottom: 25px;">فني / مهندس الوردية</p>
+      <p>.......................................</p>
+    </div>
+    <div>
+      <p style="margin-bottom: 25px;">مشرف الجودة والإنتاج</p>
+      <p>.......................................</p>
+    </div>
+    <div>
+      <p style="margin-bottom: 25px;">اعتماد مدير المصنع</p>
+      <p>.......................................</p>
     </div>
   </div>
 
-  <p class="footer-note">قسم الليزر — لوحة تحكم الإنتاج اليومي</p>
+  <!-- Confirmation Modal for Reset -->
+  <div class="modal-backdrop" id="resetModal">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <h3 class="modal-title">تفريغ بيانات الوردية؟</h3>
+      <p class="modal-desc">سيتم مسح جميع بيانات العملاء والتوقفات المدخلة واستعادة الإعدادات الافتراضية للوردية الجديدة.</p>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn cancel" id="cancelResetBtn">إلغاء</button>
+        <button type="button" class="modal-btn confirm" id="confirmResetBtn">تفريغ الآن</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- JavaScript Logic -->
   <script>
     (function() {
-      const machineDefaults = [32, 41, 30, 55];
-      const machinesEl = document.getElementById('machines');
-      const STORAGE_KEY = 'laser_production_data';
+      'use strict';
 
-      // ============ حفظ تلقائي ============
-      function saveState() {
-        const state = {
-          shiftPreset: document.getElementById('shiftPreset').value,
-          startTime: document.getElementById('startTime').value,
-          shiftEndTime: document.getElementById('shiftEndTime').value,
-          actualEndTime: document.getElementById('actualEndTime').value,
-          machines: []
-        };
+      const STORAGE_KEY = 'laser_production_pro_v2';
+      const THEME_KEY = 'laser_app_theme';
+      const MACHINE_DEFAULTS = [32, 41, 30, 55];
+      const NUM_MACHINES = 4;
 
-        document.querySelectorAll('.machine-card').forEach((card, i) => {
-          const machineData = {
-            secInput: card.querySelector('.secInput').value,
-            restFrom: card.querySelector('.restFrom').value,
-            gasFrom: card.querySelector('.gasFrom').value,
-            sizeInput: card.querySelector('.sizeInput').value,
-            downFrom: card.querySelector('.downFrom').value,
-            downTo: card.querySelector('.downTo').value,
-            reasonInput: card.querySelector('.reasonInput').value,
-            clients: []
-          };
+      // DOM Elements
+      const machinesListEl = document.getElementById('machinesList');
+      const toastEl = document.getElementById('toast');
+      const toastTextEl = document.getElementById('toastText');
+      const toastIconEl = document.getElementById('toastIcon');
+      const startTimeInput = document.getElementById('startTime');
+      const shiftEndTimeInput = document.getElementById('shiftEndTime');
+      const actualEndTimeInput = document.getElementById('actualEndTime');
+      const shiftDurationLabel = document.getElementById('shiftDurationLabel');
+      const earlyLeaveLabel = document.getElementById('earlyLeaveLabel');
+      const elapsedLabel = document.getElementById('elapsedLabel');
+      const activeShiftBadge = document.getElementById('activeShiftBadge');
+      const resultsContainer = document.getElementById('resultsContainer');
+      const resetModal = document.getElementById('resetModal');
 
-          card.querySelectorAll('.client-entry').forEach(entry => {
-            machineData.clients.push({
-              name: entry.querySelector('.clientName').value,
-              legSec: entry.querySelector('.clientLegSec').value,
-              from: entry.querySelector('.clientFrom').value,
-              to: entry.querySelector('.clientTo').value
-            });
-          });
+      // Theme Management
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      let currentTheme = localStorage.getItem(THEME_KEY) || 'dark';
+      applyTheme(currentTheme);
 
-          state.machines.push(machineData);
-        });
+      themeToggleBtn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(currentTheme);
+        localStorage.setItem(THEME_KEY, currentTheme);
+        showToast(currentTheme === 'dark' ? 'تم تفعيل الوضع الداكن' : 'تم تفعيل الوضع الفاتح', '🌓');
+      });
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        
-        const indicator = document.getElementById('saveIndicator');
-        indicator.classList.add('show');
-        clearTimeout(indicator._timeout);
-        indicator._timeout = setTimeout(() => indicator.classList.remove('show'), 1500);
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', theme === 'dark' ? '#0b0f17' : '#ea580c');
+        }
       }
 
-      function loadState() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) return false;
-        
-        try {
-          const state = JSON.parse(saved);
-          
-          document.getElementById('shiftPreset').value = state.shiftPreset || '10-morning';
-          document.getElementById('startTime').value = state.startTime || '08:00';
-          document.getElementById('shiftEndTime').value = state.shiftEndTime || '18:00';
-          document.getElementById('actualEndTime').value = state.actualEndTime || '18:00';
+      // Toast Notification Helper
+      let toastTimer = null;
+      function showToast(text, icon = '✓', type = '') {
+        toastTextEl.textContent = text;
+        toastIconEl.textContent = icon;
+        toastEl.className = 'toast-msg show' + (type ? ' ' + type : '');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 1800);
+      }
 
-          document.querySelectorAll('.machine-card').forEach((card, i) => {
-            const machineData = state.machines[i];
-            if (!machineData) return;
+      // ==========================================
+      // TIME UTILITY FUNCTIONS
+      // ==========================================
+      function parseTimeToMinutes(tStr) {
+        if (!tStr || !tStr.includes(':')) return null;
+        const [h, m] = tStr.split(':').map(Number);
+        if (isNaN(h) || isNaN(m)) return null;
+        return h * 60 + m;
+      }
 
-            card.querySelector('.secInput').value = machineData.secInput;
-            card.querySelector('.restFrom').value = machineData.restFrom;
-            card.querySelector('.gasFrom').value = machineData.gasFrom;
-            card.querySelector('.sizeInput').value = machineData.sizeInput;
-            card.querySelector('.downFrom').value = machineData.downFrom;
-            card.querySelector('.downTo').value = machineData.downTo;
-            card.querySelector('.reasonInput').value = machineData.reasonInput;
+      function formatMinsToDuration(totalMins) {
+        if (totalMins == null || isNaN(totalMins) || totalMins < 0) return '0 د';
+        const hrs = Math.floor(totalMins / 60);
+        const mins = Math.round(totalMins % 60);
+        if (hrs === 0) return `${mins} د`;
+        if (mins === 0) return `${hrs} س`;
+        return `${hrs} س و ${mins} د`;
+      }
 
-            const clientList = card.querySelector('.client-list');
-            clientList.innerHTML = '';
-            machineData.clients.forEach(client => {
-              const row = document.createElement('div');
-              row.className = 'client-entry';
-              row.innerHTML = `
-                <div class="client-entry-grid">
-                  <input type="text" class="clientName" placeholder="اسم العميل" value="${client.name || ''}">
-                  <input type="number" class="clientLegSec" placeholder="زمن الجنب (ث)" value="${client.legSec || ''}" min="1">
+      function calcTimeDifference(startStr, endStr) {
+        const s = parseTimeToMinutes(startStr);
+        const e = parseTimeToMinutes(endStr);
+        if (s === null || e === null) return 0;
+        if (e >= s) {
+          return e - s;
+        } else {
+          return (24 * 60 - s) + e;
+        }
+      }
+
+      // ==========================================
+      // SHIFT TIMING CALCULATIONS & PRESETS
+      // ==========================================
+      function updateShiftStats() {
+        const start = startTimeInput.value;
+        const plannedEnd = shiftEndTimeInput.value;
+        const actualEnd = actualEndTimeInput.value;
+
+        const plannedDurationMins = calcTimeDifference(start, plannedEnd);
+        const actualDurationMins = calcTimeDifference(start, actualEnd);
+
+        shiftDurationLabel.textContent = formatMinsToDuration(plannedDurationMins);
+        elapsedLabel.textContent = formatMinsToDuration(actualDurationMins);
+
+        if (actualDurationMins < plannedDurationMins) {
+          const earlyMins = plannedDurationMins - actualDurationMins;
+          earlyLeaveLabel.textContent = formatMinsToDuration(earlyMins);
+          earlyLeaveLabel.className = 'ribbon-value warning';
+        } else {
+          earlyLeaveLabel.textContent = '0 د';
+          earlyLeaveLabel.className = 'ribbon-value ok';
+        }
+
+        autoSave();
+      }
+
+      // Shift Preset Buttons Click Handler
+      document.querySelectorAll('.preset-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const start = btn.dataset.start;
+          const end = btn.dataset.end;
+          startTimeInput.value = start;
+          shiftEndTimeInput.value = end;
+          actualEndTimeInput.value = end;
+
+          activeShiftBadge.textContent = btn.textContent.trim().split('\n')[0];
+          updateShiftStats();
+          showToast(`تم اختيار ${btn.textContent.trim().split('\n')[0]}`, '⏰');
+        });
+      });
+
+      [startTimeInput, shiftEndTimeInput, actualEndTimeInput].forEach(inp => {
+        inp.addEventListener('input', updateShiftStats);
+        inp.addEventListener('change', updateShiftStats);
+      });
+
+      // ==========================================
+      // BUILD MACHINES DOM
+      // ==========================================
+      function renderMachines() {
+        machinesListEl.innerHTML = '';
+
+        for (let i = 0; i < NUM_MACHINES; i++) {
+          const defaultSec = MACHINE_DEFAULTS[i];
+          const mCard = document.createElement('div');
+          mCard.className = 'machine-card';
+          mCard.id = `machineCard_${i}`;
+          mCard.dataset.index = i;
+
+          mCard.innerHTML = `
+            <div class="machine-top-bar">
+              <div class="machine-name-title">
+                <span class="dot"></span>
+                ماكينة ${i + 1}
+              </div>
+              <span class="machine-status-tag" id="statusTag_${i}">جاهزة للعمل</span>
+            </div>
+
+            <div class="stepper-box">
+              <span class="stepper-label">زمن الجنب الأساسي للماكينة:</span>
+              <div class="stepper-controls">
+                <button type="button" class="step-btn dec-sec" data-idx="${i}">-</button>
+                <input type="number" class="secInput" data-idx="${i}" value="${defaultSec}" min="1" max="300">
+                <button type="button" class="step-btn inc-sec" data-idx="${i}">+</button>
+                <span style="font-size:12px; font-weight:700; color:var(--text-muted);">ث</span>
+              </div>
+            </div>
+
+            <button type="button" class="drawer-btn" data-target="clientDrawer_${i}">
+              <span>👥 العملاء والتشغيلات الخاصة</span>
+              <span class="drawer-val" id="clientSummary_${i}">
+                مفيش عملاء <span class="chev">›</span>
+              </span>
+            </button>
+            <div class="drawer-content" id="clientDrawer_${i}">
+              <div class="client-list" data-machine="${i}"></div>
+              <button type="button" class="add-client-btn" data-machine="${i}">
+                + إضافة عميل / تشغيلة
+              </button>
+            </div>
+
+            <button type="button" class="drawer-btn" data-target="stopDrawer_${i}">
+              <span>🛑 التوقفات والأعطال</span>
+              <span class="drawer-val" id="stopSummary_${i}">
+                0 دقيقة <span class="chev">›</span>
+              </span>
+            </button>
+            <div class="drawer-content" id="stopDrawer_${i}">
+              <div class="stoppage-grid">
+                <div class="form-group">
+                  <label>بداية الراحة (+30د تلقائي)</label>
+                  <input type="time" class="restFrom" data-idx="${i}">
                 </div>
-                <div class="client-entry-foot">
-                  <input type="time" class="clientFrom" value="${client.from || ''}">
-                  <input type="time" class="clientTo" value="${client.to || ''}">
-                  <button type="button" class="removeClientBtn">×</button>
+                <div class="form-group">
+                  <label>سحب الغاز (+10د تلقائي)</label>
+                  <input type="time" class="gasFrom" data-idx="${i}">
                 </div>
-              `;
-              clientList.appendChild(row);
-            });
-            updateClientCountLabel(i);
+              </div>
+
+              <div class="form-group">
+                <label>تغيير مقاسات (دقيقة)</label>
+                <input type="number" class="sizeInput" data-idx="${i}" value="10" min="0">
+              </div>
+
+              <div class="form-group">
+                <label>عطل طارئ (من - إلى)</label>
+                <div class="grid-2">
+                  <input type="time" class="downFrom" data-idx="${i}">
+                  <input type="time" class="downTo" data-idx="${i}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>سبب العطل (اختياري)</label>
+                <input type="text" class="reasonInput" data-idx="${i}" placeholder="مثال: صيانة سيرفو، كهرباء">
+              </div>
+            </div>
+          `;
+
+          machinesListEl.appendChild(mCard);
+        }
+
+        attachMachineEvents();
+      }
+
+      // ==========================================
+      // ATTACH EVENTS FOR MACHINE CONTROLS
+      // ==========================================
+      let staticEventsAttached = false;
+      function attachMachineEvents() {
+        // Drawer Accordion Toggles
+        document.querySelectorAll('.drawer-btn').forEach(btn => {
+          btn.onclick = () => {
+            const targetId = btn.dataset.target;
+            const content = document.getElementById(targetId);
+            if (content) {
+              const isOpen = content.classList.contains('open');
+              content.classList.toggle('open', !isOpen);
+              btn.classList.toggle('open', !isOpen);
+            }
+          };
+        });
+
+        // Stepper Buttons (- / +)
+        document.querySelectorAll('.step-btn').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const idx = btn.dataset.idx;
+            const input = machinesListEl.querySelector(`.secInput[data-idx="${idx}"]`);
+            if (input) {
+              let val = parseInt(input.value, 10) || 30;
+              if (btn.classList.contains('inc-sec')) val += 1;
+              if (btn.classList.contains('dec-sec')) val = Math.max(1, val - 1);
+              input.value = val;
+              autoSave();
+            }
+          };
+        });
+
+        // Add Client Button Click
+        document.querySelectorAll('.add-client-btn').forEach(btn => {
+          btn.onclick = () => {
+            const machineIdx = parseInt(btn.dataset.machine, 10);
+            addClientRow(machineIdx);
+          };
+        });
+
+        if (!staticEventsAttached) {
+          staticEventsAttached = true;
+
+          // Global Sync Break & Gas Across all 4 machines
+          document.getElementById('syncStoppagesBtn').addEventListener('click', () => {
+            const firstRest = machinesListEl.querySelector('.restFrom')?.value || '';
+            const firstGas = machinesListEl.querySelector('.gasFrom')?.value || '';
+            const firstSize = machinesListEl.querySelector('.sizeInput')?.value || '10';
+
+            if (!firstRest && !firstGas) {
+              showToast('يرجى إدخال وقت الراحة أو سحب الغاز في ماكينة 1 أولاً', 'ℹ️');
+              return;
+            }
+
+            document.querySelectorAll('.restFrom').forEach(inp => inp.value = firstRest);
+            document.querySelectorAll('.gasFrom').forEach(inp => inp.value = firstGas);
+            document.querySelectorAll('.sizeInput').forEach(inp => inp.value = firstSize);
+
+            updateAllSummaries();
+            autoSave();
+            showToast('تمت مزامنة التوقفات على جميع الماكينات', '✓', 'success');
           });
 
+          // Tab Filter Switching
+          document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.addEventListener('click', () => {
+              document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+              tab.classList.add('active');
+              const filter = tab.dataset.filter;
+
+              document.querySelectorAll('.machine-card').forEach((card, idx) => {
+                if (filter === 'all' || filter === String(idx)) {
+                  card.style.display = 'block';
+                } else {
+                  card.style.display = 'none';
+                }
+              });
+            });
+          });
+
+          // Machine input listeners
+          machinesListEl.addEventListener('input', (e) => {
+            if (e.target.classList.contains('restFrom')) {
+              const val = e.target.value;
+              document.querySelectorAll('.restFrom').forEach(inp => {
+                if (inp !== e.target && !inp.value) inp.value = val;
+              });
+            }
+            updateAllSummaries();
+            autoSave();
+          });
+
+          machinesListEl.addEventListener('change', () => {
+            updateAllSummaries();
+            autoSave();
+          });
+        }
+      }
+
+      // ==========================================
+      // CLIENT MANAGEMENT LOGIC
+      // ==========================================
+      function addClientRow(machineIdx, clientData = null) {
+        const clientList = machinesListEl.querySelector(`.client-list[data-machine="${machineIdx}"]`);
+        if (!clientList) return;
+
+        const baseSecInput = machinesListEl.querySelector(`.secInput[data-idx="${machineIdx}"]`);
+        const baseSec = baseSecInput ? baseSecInput.value : '30';
+
+        let suggestedStart = startTimeInput.value || '08:00';
+        const existingEntries = clientList.querySelectorAll('.client-entry');
+        if (existingEntries.length > 0) {
+          const lastToInput = existingEntries[existingEntries.length - 1].querySelector('.clientTo');
+          if (lastToInput && lastToInput.value) {
+            suggestedStart = lastToInput.value;
+          }
+        }
+
+        const defaultEnd = actualEndTimeInput.value || shiftEndTimeInput.value || '18:00';
+
+        const name = clientData ? clientData.name : '';
+        const legSec = clientData ? clientData.legSec : baseSec;
+        const from = clientData ? clientData.from : suggestedStart;
+        const to = clientData ? clientData.to : defaultEnd;
+
+        const row = document.createElement('div');
+        row.className = 'client-entry';
+        row.innerHTML = `
+          <div class="client-entry-row1">
+            <input type="text" class="clientName" placeholder="اسم العميل أو رقم الموديل" value="${name}">
+            <input type="number" class="clientLegSec" placeholder="زمن الجنب (ث)" value="${legSec}" min="1">
+          </div>
+          <div class="client-entry-row2">
+            <input type="time" class="clientFrom" value="${from}" title="من الساعة">
+            <input type="time" class="clientTo" value="${to}" title="إلى الساعة">
+            <button type="button" class="del-client-btn" title="حذف العميل">×</button>
+          </div>
+        `;
+
+        row.querySelector('.del-client-btn').addEventListener('click', () => {
+          row.remove();
+          updateMachineClientBadge(machineIdx);
+          autoSave();
+        });
+
+        clientList.appendChild(row);
+        updateMachineClientBadge(machineIdx);
+
+        const drawer = document.getElementById(`clientDrawer_${machineIdx}`);
+        const drawerBtn = document.querySelector(`.drawer-btn[data-target="clientDrawer_${machineIdx}"]`);
+        if (drawer && !drawer.classList.contains('open')) {
+          drawer.classList.add('open');
+          if (drawerBtn) drawerBtn.classList.add('open');
+        }
+
+        autoSave();
+      }
+
+      function updateMachineClientBadge(machineIdx) {
+        const clientList = machinesListEl.querySelector(`.client-list[data-machine="${machineIdx}"]`);
+        const count = clientList ? clientList.querySelectorAll('.client-entry').length : 0;
+        
+        const summaryLabel = document.getElementById(`clientSummary_${machineIdx}`);
+        if (summaryLabel) {
+          summaryLabel.innerHTML = `${count > 0 ? count + ' عميل' : 'مفيش عملاء'} <span class="chev">›</span>`;
+        }
+
+        const tabBadge = document.getElementById(`badgeM${machineIdx}`);
+        if (tabBadge) {
+          tabBadge.textContent = count;
+        }
+
+        const statusTag = document.getElementById(`statusTag_${machineIdx}`);
+        if (statusTag) {
+          if (count > 0) {
+            statusTag.textContent = `${count} عملاء`;
+            statusTag.style.color = 'var(--denim)';
+            statusTag.style.borderColor = 'var(--denim)';
+          } else {
+            statusTag.textContent = 'جاهزة للعمل';
+            statusTag.style.color = 'var(--text-dim)';
+            statusTag.style.borderColor = 'var(--border)';
+          }
+        }
+      }
+
+      function updateAllSummaries() {
+        for (let i = 0; i < NUM_MACHINES; i++) {
+          updateMachineClientBadge(i);
+
+          const card = document.getElementById(`machineCard_${i}`);
+          if (!card) continue;
+
+          let stopMins = 0;
+          const restFrom = card.querySelector('.restFrom').value;
+          const gasFrom = card.querySelector('.gasFrom').value;
+          const sizeMins = parseInt(card.querySelector('.sizeInput').value, 10) || 0;
+          const downFrom = card.querySelector('.downFrom').value;
+          const downTo = card.querySelector('.downTo').value;
+
+          if (restFrom) stopMins += 30;
+          if (gasFrom) stopMins += 10;
+          stopMins += sizeMins;
+          if (downFrom && downTo) {
+            stopMins += calcTimeDifference(downFrom, downTo);
+          }
+
+          const stopSummary = document.getElementById(`stopSummary_${i}`);
+          if (stopSummary) {
+            stopSummary.innerHTML = `${stopMins} دقيقة <span class="chev">›</span>`;
+          }
+        }
+      }
+
+      // ==========================================
+      // CALCULATION ENGINE
+      // ==========================================
+      function calculateProduction() {
+        const startStr = startTimeInput.value;
+        const actualEndStr = actualEndTimeInput.value || shiftEndTimeInput.value;
+        const totalActualMins = calcTimeDifference(startStr, actualEndStr);
+
+        if (totalActualMins <= 0) {
+          showToast('يرجى التأكد من صحة أوقات الوردية', '⚠️', 'danger');
+          return;
+        }
+
+        let totalPantsOverall = 0;
+        let totalDowntimeAllMachines = 0;
+        let totalNetOperatingMinsAllMachines = 0;
+
+        const machineResults = [];
+        const clientResults = [];
+
+        for (let i = 0; i < NUM_MACHINES; i++) {
+          const card = document.getElementById(`machineCard_${i}`);
+          const baseLegSec = parseFloat(card.querySelector('.secInput').value) || MACHINE_DEFAULTS[i];
+
+          let machineDowntime = 0;
+          const restFrom = card.querySelector('.restFrom').value;
+          const gasFrom = card.querySelector('.gasFrom').value;
+          const sizeMins = parseFloat(card.querySelector('.sizeInput').value) || 0;
+          const downFrom = card.querySelector('.downFrom').value;
+          const downTo = card.querySelector('.downTo').value;
+
+          if (restFrom) machineDowntime += 30;
+          if (gasFrom) machineDowntime += 10;
+          machineDowntime += sizeMins;
+          if (downFrom && downTo) {
+            machineDowntime += calcTimeDifference(downFrom, downTo);
+          }
+
+          totalDowntimeAllMachines += machineDowntime;
+
+          const machineNetMins = Math.max(0, totalActualMins - machineDowntime);
+          totalNetOperatingMinsAllMachines += machineNetMins;
+
+          const clientEntries = card.querySelectorAll('.client-entry');
+          let machineTotalPants = 0;
+
+          if (clientEntries.length > 0) {
+            let totalClientGrossMins = 0;
+            const clientsData = [];
+
+            clientEntries.forEach(entry => {
+              const name = entry.querySelector('.clientName').value.trim() || `عميل م${i + 1}`;
+              const legSec = parseFloat(entry.querySelector('.clientLegSec').value) || baseLegSec;
+              const cFrom = entry.querySelector('.clientFrom').value || startStr;
+              const cTo = entry.querySelector('.clientTo').value || actualEndStr;
+              const grossMins = calcTimeDifference(cFrom, cTo);
+
+              totalClientGrossMins += grossMins;
+              clientsData.push({ name, legSec, cFrom, cTo, grossMins });
+            });
+
+            clientsData.forEach(c => {
+              const ratio = totalClientGrossMins > 0 ? (c.grossMins / totalClientGrossMins) : (1 / clientsData.length);
+              const clientDownMins = machineDowntime * ratio;
+              const clientNetMins = Math.max(0, c.grossMins - clientDownMins);
+              const clientNetSecs = clientNetMins * 60;
+              const clientPants = Math.floor(clientNetSecs / (2 * c.legSec));
+
+              machineTotalPants += clientPants;
+
+              clientResults.push({
+                clientName: c.name,
+                machineNum: i + 1,
+                timeRange: `${c.cFrom} - ${c.cTo}`,
+                legSec: c.legSec,
+                downMins: Math.round(clientDownMins),
+                netMins: Math.round(clientNetMins),
+                pants: clientPants
+              });
+            });
+          } else {
+            const netSeconds = machineNetMins * 60;
+            machineTotalPants = Math.floor(netSeconds / (2 * baseLegSec));
+          }
+
+          totalPantsOverall += machineTotalPants;
+          const machinePerHour = totalActualMins > 0 ? (machineTotalPants / (totalActualMins / 60)).toFixed(1) : '0';
+
+          machineResults.push({
+            machineNum: i + 1,
+            legSec: baseLegSec,
+            downtimeMins: machineDowntime,
+            netMins: machineNetMins,
+            pants: machineTotalPants,
+            perHour: machinePerHour
+          });
+        }
+
+        const actualHours = totalActualMins / 60;
+        const totalPerHour = actualHours > 0 ? Math.round(totalPantsOverall / actualHours) : 0;
+        const totalCapacityMins = totalActualMins * NUM_MACHINES;
+        const efficiencyPercent = totalCapacityMins > 0 ? Math.round((totalNetOperatingMinsAllMachines / totalCapacityMins) * 100) : 0;
+
+        document.getElementById('kpiTotalPants').textContent = totalPantsOverall.toLocaleString('en-US');
+        document.getElementById('kpiPerHour').textContent = totalPerHour.toLocaleString('en-US');
+        document.getElementById('kpiEfficiency').textContent = `${efficiencyPercent}%`;
+        document.getElementById('kpiTotalDown').textContent = formatMinsToDuration(totalDowntimeAllMachines);
+        document.getElementById('resShiftTag').textContent = activeShiftBadge.textContent;
+
+        const todayStr = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        
+        // Update Official Print Header Elements
+        const printDateText = document.getElementById('printDateText');
+        const printShiftTimes = document.getElementById('printShiftTimes');
+        const printActualDuration = document.getElementById('printActualDuration');
+        const printShiftBadge = document.getElementById('printShiftBadge');
+
+        if (printDateText) printDateText.textContent = todayStr;
+        if (printShiftTimes) printShiftTimes.textContent = `${startStr} إلى ${actualEndStr}`;
+        if (printActualDuration) printActualDuration.textContent = formatMinsToDuration(totalActualMins);
+        if (printShiftBadge) printShiftBadge.textContent = activeShiftBadge.textContent;
+
+        // Populate Detail Table Body
+        const tbody = document.getElementById('detailTableBody');
+        tbody.innerHTML = '';
+        machineResults.forEach(m => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="text-cell"><span class="tag-badge denim">ماكينة ${m.machineNum}</span></td>
+            <td>${m.legSec} ث</td>
+            <td><span style="color:var(--warning);">${m.downtimeMins} د</span></td>
+            <td>${formatMinsToDuration(m.netMins)}</td>
+            <td style="color:var(--laser); font-weight:800; font-size:14px;">${m.pants.toLocaleString()}</td>
+            <td>${m.perHour}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Detail Table Footer / Total Row
+        const tfoot = document.getElementById('detailTableFoot');
+        if (tfoot) {
+          tfoot.innerHTML = `
+            <tr>
+              <td class="text-cell">الإجمالي الكلي</td>
+              <td>-</td>
+              <td>${totalDowntimeAllMachines} د</td>
+              <td>${formatMinsToDuration(totalNetOperatingMinsAllMachines / NUM_MACHINES)}</td>
+              <td style="font-weight:800; font-size:14px;">${totalPantsOverall.toLocaleString()}</td>
+              <td>${totalPerHour}</td>
+            </tr>
+          `;
+        }
+
+        // Machine Contribution Bars
+        const barsContainer = document.getElementById('machineBarsContainer');
+        barsContainer.innerHTML = '';
+        machineResults.forEach(m => {
+          const share = totalPantsOverall > 0 ? ((m.pants / totalPantsOverall) * 100).toFixed(1) : 0;
+          const barRow = document.createElement('div');
+          barRow.className = 'bar-row';
+          barRow.innerHTML = `
+            <div class="bar-label">ماكينة ${m.machineNum}</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${share}%;"></div>
+            </div>
+            <div class="bar-val">${m.pants} <span style="font-size:10px; color:var(--text-dim);">(${share}%)</span></div>
+          `;
+          barsContainer.appendChild(barRow);
+        });
+
+        // Client Results Table
+        const clientResultsCard = document.getElementById('clientResultsCard');
+        const clientTableBody = document.getElementById('clientTableBody');
+        clientTableBody.innerHTML = '';
+
+        if (clientResults.length > 0) {
+          clientResultsCard.style.display = 'block';
+          clientResults.forEach(c => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="text-cell"><span class="tag-badge laser">${c.clientName}</span></td>
+              <td>ماكينة ${c.machineNum}</td>
+              <td>${c.timeRange}</td>
+              <td>${c.legSec} ث</td>
+              <td>${c.downMins} د</td>
+              <td>${formatMinsToDuration(c.netMins)}</td>
+              <td style="color:var(--laser); font-weight:800;">${c.pants.toLocaleString()}</td>
+            `;
+            clientTableBody.appendChild(tr);
+          });
+        } else {
+          clientResultsCard.style.display = 'none';
+        }
+
+        resultsContainer.style.display = 'block';
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('تم حساب الإنتاج بدقة!', '⚡', 'success');
+
+        window._lastCalculation = {
+          dateStr: todayStr,
+          shiftName: activeShiftBadge.textContent,
+          startTime: startStr,
+          endTime: actualEndStr,
+          actualDuration: formatMinsToDuration(totalActualMins),
+          totalPants: totalPantsOverall,
+          perHour: totalPerHour,
+          efficiency: efficiencyPercent,
+          totalDown: formatMinsToDuration(totalDowntimeAllMachines),
+          machines: machineResults,
+          clients: clientResults
+        };
+      }
+
+      document.getElementById('calcBtn').addEventListener('click', calculateProduction);
+
+      // ==========================================
+      // WHATSAPP SHARE GENERATOR
+      // ==========================================
+      document.getElementById('shareWhatsappBtn').addEventListener('click', () => {
+        if (!window._lastCalculation) {
+          calculateProduction();
+        }
+        const data = window._lastCalculation;
+        if (!data) return;
+
+        let msg = `📊 *تقرير إنتاج قسم الليزر*\n`;
+        msg += `📅 *التاريخ:* ${data.dateStr}\n`;
+        msg += `⏰ *الوردية:* ${data.shiftName} (${data.startTime} - ${data.endTime})\n`;
+        msg += `⏱️ *مدة التشغيل الفعلية:* ${data.actualDuration}\n`;
+        msg += `─────────────────\n`;
+        msg += `👖 *إجمالي الإنتاج:* ${data.totalPants.toLocaleString()} بنطلون\n`;
+        msg += `⚡ *معدل الإنتاج:* ${data.perHour} بنطلون/ساعة\n`;
+        msg += `🎯 *نسبة الكفاءة:* ${data.efficiency}%\n`;
+        msg += `🛑 *إجمالي التوقفات:* ${data.totalDown}\n`;
+        msg += `─────────────────\n`;
+        msg += `🏭 *تفاصيل الماكينات:*\n`;
+
+        data.machines.forEach(m => {
+          msg += `• *ماكينة ${m.machineNum}:* ${m.pants.toLocaleString()} بنطلون (توقف: ${m.downtimeMins} د)\n`;
+        });
+
+        if (data.clients && data.clients.length > 0) {
+          msg += `─────────────────\n`;
+          msg += `👥 *تفاصيل العملاء:*\n`;
+          data.clients.forEach(c => {
+            msg += `• *${c.clientName}* (ماكينة ${c.machineNum}): ${c.pants.toLocaleString()} بنطلون\n`;
+          });
+        }
+
+        msg += `─────────────────\n`;
+        msg += `تم الإنشاء عبر منظومة حاسبة إنتاج الليزر ✨`;
+
+        const encodedMsg = encodeURIComponent(msg);
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedMsg}`;
+        window.open(whatsappUrl, '_blank');
+      });
+
+      // ==========================================
+      // PRINT ACTIONS
+      // ==========================================
+      function triggerPrint() {
+        if (!window._lastCalculation) {
+          calculateProduction();
+        }
+        setTimeout(() => {
+          window.print();
+        }, 150);
+      }
+
+      document.getElementById('quickPrintBtn').addEventListener('click', triggerPrint);
+      document.getElementById('printReportBtn').addEventListener('click', triggerPrint);
+
+      // ==========================================
+      // STATE PERSISTENCE (AUTO-SAVE & LOAD)
+      // ==========================================
+      function autoSave() {
+        try {
+          const state = {
+            startTime: startTimeInput.value,
+            shiftEndTime: shiftEndTimeInput.value,
+            actualEndTime: actualEndTimeInput.value,
+            activePreset: document.querySelector('.preset-pill.active')?.dataset.preset || '10-morning',
+            machines: []
+          };
+
+          for (let i = 0; i < NUM_MACHINES; i++) {
+            const card = document.getElementById(`machineCard_${i}`);
+            if (!card) continue;
+
+            const mData = {
+              secInput: card.querySelector('.secInput').value,
+              restFrom: card.querySelector('.restFrom').value,
+              gasFrom: card.querySelector('.gasFrom').value,
+              sizeInput: card.querySelector('.sizeInput').value,
+              downFrom: card.querySelector('.downFrom').value,
+              downTo: card.querySelector('.downTo').value,
+              reasonInput: card.querySelector('.reasonInput').value,
+              clients: []
+            };
+
+            card.querySelectorAll('.client-entry').forEach(entry => {
+              mData.clients.push({
+                name: entry.querySelector('.clientName').value,
+                legSec: entry.querySelector('.clientLegSec').value,
+                from: entry.querySelector('.clientFrom').value,
+                to: entry.querySelector('.clientTo').value
+              });
+            });
+
+            state.machines.push(mData);
+          }
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.warn('AutoSave error:', e);
+        }
+      }
+
+      function loadSavedState() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (!saved) return false;
+
+          const state = JSON.parse(saved);
+          if (state.startTime) startTimeInput.value = state.startTime;
+          if (state.shiftEndTime) shiftEndTimeInput.value = state.shiftEndTime;
+          if (state.actualEndTime) actualEndTimeInput.value = state.actualEndTime;
+
+          if (state.activePreset) {
+            document.querySelectorAll('.preset-pill').forEach(btn => {
+              if (btn.dataset.preset === state.activePreset) {
+                btn.classList.add('active');
+                activeShiftBadge.textContent = btn.textContent.trim().split('\n')[0];
+              } else {
+                btn.classList.remove('active');
+              }
+            });
+          }
+
+          if (Array.isArray(state.machines)) {
+            state.machines.forEach((mData, i) => {
+              const card = document.getElementById(`machineCard_${i}`);
+              if (!card || !mData) return;
+
+              if (mData.secInput) card.querySelector('.secInput').value = mData.secInput;
+              if (mData.restFrom) card.querySelector('.restFrom').value = mData.restFrom;
+              if (mData.gasFrom) card.querySelector('.gasFrom').value = mData.gasFrom;
+              if (mData.sizeInput) card.querySelector('.sizeInput').value = mData.sizeInput;
+              if (mData.downFrom) card.querySelector('.downFrom').value = mData.downFrom;
+              if (mData.downTo) card.querySelector('.downTo').value = mData.downTo;
+              if (mData.reasonInput) card.querySelector('.reasonInput').value = mData.reasonInput;
+
+              if (Array.isArray(mData.clients)) {
+                mData.clients.forEach(c => {
+                  addClientRow(i, c);
+                });
+              }
+            });
+          }
+
+          updateShiftStats();
+          updateAllSummaries();
           return true;
-        } catch(e) {
+        } catch (e) {
           console.error('Error loading state:', e);
           return false;
         }
       }
 
-      // ============ إنشاء الماكينات ============
-      machineDefaults.forEach((val, i) => {
-        const div = document.createElement('div');
-        div.className = 'machine-card';
-        div.innerHTML = `
-          <p class="machine-title"><span class="dot"></span>ماكينة ${i+1}</p>
-          <button type="button" class="secToggleBtn" data-idx="${i}" data-type="client">
-            <span>العملاء</span>
-            <span class="secToggleVal clientCountLabel" data-idx="${i}">مفيش عملاء<span class="chev">›</span></span>
-          </button>
-          <div class="secPanel" data-idx="${i}" data-type="client">
-            <label>العملاء اللي اشتغلوا على الماكينة دي (بزمن جنب خاص بكل عميل)</label>
-            <div class="client-list" data-machine="${i}"></div>
-            <button type="button" class="addClientBtn" data-machine="${i}">+ ضيف عميل</button>
-          </div>
-          <button type="button" class="secToggleBtn" data-idx="${i}" data-type="leg">
-            <span>زمن الجنب الأساسي</span>
-            <span class="secToggleVal">${val} ث<span class="chev">›</span></span>
-          </button>
-          <div class="secPanel" data-idx="${i}" data-type="leg">
-            <label>زمن الجنب الأساسي (ثانية)</label>
-            <input type="number" class="secInput" data-idx="${i}" data-prev-val="${val}" value="${val}" min="1" />
-          </div>
-          <hr class="divider" />
-          <p class="field-group-title">توقفات ماكينة ${i+1}</p>
-          <div class="field"><label>بداية الراحة (تلقائي +30 دقيقة)</label><input type="time" class="restFrom" data-idx="${i}" /></div>
-          <div class="field"><label>بداية سحب الغاز (تلقائي +10 دقائق)</label><input type="time" class="gasFrom" data-idx="${i}" /></div>
-          <div class="field"><label>تغيير مقاسات (دقيقة) - تتوزع بالنسبه</label><input type="number" class="sizeInput" data-idx="${i}" value="10" min="0"></div>
-          <div class="field">
-            <label>عطل طارئ من الساعة - لغاية الساعة</label>
-            <div class="down-row">
-              <input type="time" class="downFrom" data-idx="${i}" />
-              <input type="time" class="downTo" data-idx="${i}" />
-            </div>
-          </div>
-          <div class="field"><label>سبب العطل</label><input type="text" class="reasonInput" data-idx="${i}" placeholder="مثال: صيانة، عطل كهرباء"></div>
-        `;
-        machinesEl.appendChild(div);
+      // ==========================================
+      // RESET / NEW SHIFT MODAL
+      // ==========================================
+      const resetBtn = document.getElementById('resetBtn');
+      const cancelResetBtn = document.getElementById('cancelResetBtn');
+      const confirmResetBtn = document.getElementById('confirmResetBtn');
+
+      resetBtn.addEventListener('click', () => {
+        resetModal.classList.add('open');
       });
 
-      // ============ مزامنة الراحة ============
-      document.addEventListener('input', (e) => {
-        if (e.target.classList.contains('restFrom')) {
-          const value = e.target.value;
-          document.querySelectorAll('.restFrom').forEach(inp => { if (inp !== e.target) inp.value = value; });
-        }
-        // حفظ تلقائي عند أي تغيير
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-          saveState();
-        }
+      cancelResetBtn.addEventListener('click', () => {
+        resetModal.classList.remove('open');
       });
 
-      document.addEventListener('change', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-          saveState();
-        }
+      confirmResetBtn.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        resetModal.classList.remove('open');
+        renderMachines();
+        startTimeInput.value = '08:00';
+        shiftEndTimeInput.value = '18:00';
+        actualEndTimeInput.value = '18:00';
+        document.querySelectorAll('.preset-pill').forEach((b, i) => b.classList.toggle('active', i === 0));
+        activeShiftBadge.textContent = '10 ساعات صباحي';
+        resultsContainer.style.display = 'none';
+        window._lastCalculation = null;
+        updateShiftStats();
+        updateAllSummaries();
+        showToast('تم تفريغ بيانات الوردية بنجاح', '🧹', 'success');
       });
 
-      // ============ تحديث عداد العملاء ============
-      function updateClientCountLabel(machineIdx) {
-        const list = machinesEl.querySelector(`.client-list[data-machine="${machineIdx}"]`);
-        const count = list ? list.querySelectorAll('.client-entry').length : 0;
-        const label = machinesEl.querySelector(`.clientCountLabel[data-idx="${machineIdx}"]`);
-        if (label) label.innerHTML = `${count > 0 ? count + ' عميل' : 'مفيش عملاء'}<span class="chev">›</span>`;
+      // ==========================================
+      // INITIALIZATION
+      // ==========================================
+      renderMachines();
+      const loaded = loadSavedState();
+      if (!loaded) {
+        updateShiftStats();
+        updateAllSummaries();
       }
 
-      // ============ إضافة عميل ============
-      function addClientRow(machineIdx) {
-        const list = machinesEl.querySelector(`.client-list[data-machine="${machineIdx}"]`);
-        const machineSecInput = machinesEl.querySelectorAll('.secInput')[machineIdx];
-        const machineSec = machineSecInput ? machineSecInput.value : '';
-        const shiftEnd = document.getElementById('actualEndTime').value || document.getElementById('shiftEndTime').value;
-        let shiftStart = document.getElementById('startTime').value;
-        const existingClients = list.querySelectorAll('.client-entry');
-        if (existingClients.length > 0) {
-          const lastClient = existingClients[existingClients.length - 1];
-          const lastClientTo = lastClient.querySelector('.clientTo').value;
-          if (lastClientTo) shiftStart = lastClientTo;
-        }
-        const row = document.createElement('div');
-        row.className = 'client-entry';
-        row.innerHTML = `
-          <div class="client-entry-grid">
-            <input type="text" class="clientName" placeholder="اسم العميل">
-            <input type="number" class="clientLegSec" placeholder="زمن الجنب (ث)" value="${machineSec}" min="1">
-          </div>
-          <div class="client-entry-foot">
-    
+    })();
+  </script>
+</body>
+</html>
