@@ -753,9 +753,15 @@
 
     .client-entry-row1 {
       display: grid;
-      grid-template-columns: 1.8fr 1fr;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
       gap: 6px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 540px) {
+      .client-entry-row1 {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .client-entry-row2 {
@@ -1495,16 +1501,22 @@
       <span class="tag-badge laser" id="activeShiftBadge">10 س صباحي</span>
     </div>
 
-    <!-- Shift Preset Dropdown Selector -->
-    <div class="shift-select-box">
-      <label for="shiftPresetSelect">⚡ اختر نظام الوردية:</label>
-      <select id="shiftPresetSelect" class="shift-select-custom">
-        <option value="10-morning" data-start="08:00" data-end="18:00" data-label="10 س صباحي" selected>☀️ وردية 10 ساعات صباحي (08:00 ص - 06:00 م)</option>
-        <option value="10-evening" data-start="18:00" data-end="04:00" data-label="10 س مسائي">🌙 وردية 10 ساعات مسائي (06:00 م - 04:00 ص)</option>
-        <option value="12-morning" data-start="08:00" data-end="20:00" data-label="12 س صباحي">☀️ وردية 12 ساعة صباحي (08:00 ص - 08:00 م)</option>
-        <option value="12-evening" data-start="20:00" data-end="08:00" data-label="12 س مسائي">🌙 وردية 12 ساعة مسائي (08:00 م - 08:00 ص)</option>
-        <option value="custom" data-start="" data-end="" data-label="مخصص">⚙️ وردية مخصصة (تحديد الأوقات يدوياً)</option>
-      </select>
+    <!-- Date & Shift System Grid -->
+    <div class="grid-2" style="margin-bottom: 12px; gap: 10px;">
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="shiftDateInput">📅 تاريخ الوردية:</label>
+        <input type="date" id="shiftDateInput" class="shift-select-custom" style="padding: 0 12px; font-weight: 700;">
+      </div>
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="shiftPresetSelect">⚡ نظام الوردية:</label>
+        <select id="shiftPresetSelect" class="shift-select-custom">
+          <option value="10-morning" data-start="08:00" data-end="18:00" data-label="10 س صباحي" selected>☀️ وردية 10 ساعات صباحي (08:00 ص - 06:00 م)</option>
+          <option value="10-evening" data-start="18:00" data-end="04:00" data-label="10 س مسائي">🌙 وردية 10 ساعات مسائي (06:00 م - 04:00 ص)</option>
+          <option value="12-morning" data-start="08:00" data-end="20:00" data-label="12 س صباحي">☀️ وردية 12 ساعة صباحي (08:00 ص - 08:00 م)</option>
+          <option value="12-evening" data-start="20:00" data-end="08:00" data-label="12 س مسائي">🌙 وردية 12 ساعة مسائي (08:00 م - 08:00 ص)</option>
+          <option value="custom" data-start="" data-end="" data-label="مخصص">⚙️ وردية مخصصة (تحديد الأوقات يدوياً)</option>
+        </select>
+      </div>
     </div>
 
     <!-- Time Inputs Grid: Responsive with clear visual order -->
@@ -1614,8 +1626,43 @@
       <div class="machine-bars" id="machineBarsContainer"></div>
     </div>
 
-    <!-- Machine Detail Table Card -->
-    <div class="card">
+    <!-- Client Detail Table Card (FIRST - Shows when clients exist) -->
+    <div class="card" id="clientResultsCard" style="display: none;">
+      <div class="card-header">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          تفصيل إنتاج العملاء والموديلات
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table id="clientDetailTable">
+          <thead>
+            <tr>
+              <th>العميل</th>
+              <th>رقم الغسلة</th>
+              <th>الكمية</th>
+              <th>الماكينة</th>
+              <th>الفترة</th>
+              <th>زمن الجنب</th>
+              <th>توقف مخصوم</th>
+              <th>الصافي</th>
+              <th>البناطيل المنتجة</th>
+              <th>معدل/س</th>
+            </tr>
+          </thead>
+          <tbody id="clientTableBody"></tbody>
+          <tfoot id="clientDetailTableFoot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Machine Detail Table Card (Summary per machine) -->
+    <div class="card" id="machineResultsCard">
       <div class="card-header">
         <div class="card-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1623,7 +1670,7 @@
             <line x1="8" y1="21" x2="16" y2="21"></line>
             <line x1="12" y1="17" x2="12" y2="21"></line>
           </svg>
-          تفاصيل إنتاج الماكينات
+          ملخص إنتاج الماكينات
         </div>
       </div>
       <div class="table-responsive">
@@ -1640,39 +1687,6 @@
           </thead>
           <tbody id="detailTableBody"></tbody>
           <tfoot id="detailTableFoot"></tfoot>
-        </table>
-      </div>
-    </div>
-
-    <!-- Client Detail Table Card (Shows if any clients exist) -->
-    <div class="card" id="clientResultsCard" style="display: none;">
-      <div class="card-header">
-        <div class="card-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          تفصيل إنتاج العملاء
-        </div>
-      </div>
-      <div class="table-responsive">
-        <table id="clientDetailTable">
-          <thead>
-            <tr>
-              <th>العميل</th>
-              <th>الماكينة</th>
-              <th>الفترة</th>
-              <th>زمن الجنب</th>
-              <th>توقف مخصوم</th>
-              <th>الصافي</th>
-              <th>البناطيل</th>
-              <th>معدل/س</th>
-            </tr>
-          </thead>
-          <tbody id="clientTableBody"></tbody>
-          <tfoot id="clientDetailTableFoot"></tfoot>
         </table>
       </div>
     </div>
@@ -1733,7 +1747,7 @@
     (function() {
       'use strict';
 
-      const STORAGE_KEY = 'laser_production_pro_v4';
+      const STORAGE_KEY = 'laser_production_pro_v5';
       const THEME_KEY = 'laser_app_theme';
       const MACHINE_DEFAULTS = [0, 0, 0, 0];
       const NUM_MACHINES = 4;
@@ -1743,6 +1757,7 @@
       const toastEl = document.getElementById('toast');
       const toastTextEl = document.getElementById('toastText');
       const toastIconEl = document.getElementById('toastIcon');
+      const shiftDateInput = document.getElementById('shiftDateInput');
       const startTimeInput = document.getElementById('startTime');
       const shiftEndTimeInput = document.getElementById('shiftEndTime');
       const actualEndTimeInput = document.getElementById('actualEndTime');
@@ -1802,6 +1817,18 @@
         if (hrs === 0) return `${mins} د`;
         if (mins === 0) return `${hrs} س`;
         return `${hrs} س و ${mins} د`;
+      }
+
+      function formatTimeTo12Hour(tStr) {
+        if (!tStr || typeof tStr !== 'string' || !tStr.includes(':')) return tStr || '';
+        const parts = tStr.split(':');
+        let h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        if (isNaN(h) || isNaN(m)) return tStr;
+        const period = h < 12 ? 'ص' : 'م';
+        let h12 = h % 12;
+        if (h12 === 0) h12 = 12;
+        return `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${period}`;
       }
 
       function calcTimeDifference(startStr, endStr) {
@@ -1934,17 +1961,11 @@
               <div class="stoppage-grid">
                 <div class="form-group">
                   <label>بداية الراحة (+30د تلقائي)</label>
-                  <select class="restFrom shift-select-custom" data-idx="${i}">
-                    <option value="" selected>لا يوجد (0 د)</option>
-                    ${getTimeSelectOptions('')}
-                  </select>
+                  <input type="time" class="restFrom" data-idx="${i}">
                 </div>
                 <div class="form-group">
                   <label>سحب الغاز (+10د تلقائي)</label>
-                  <select class="gasFrom shift-select-custom" data-idx="${i}">
-                    <option value="" selected>لا يوجد (0 د)</option>
-                    ${getTimeSelectOptions('')}
-                  </select>
+                  <input type="time" class="gasFrom" data-idx="${i}">
                 </div>
               </div>
 
@@ -1965,14 +1986,8 @@
               <div class="form-group">
                 <label>عطل طارئ (من - إلى)</label>
                 <div class="grid-2">
-                  <select class="downFrom shift-select-custom" data-idx="${i}">
-                    <option value="" selected>من (لا يوجد)</option>
-                    ${getTimeSelectOptions('')}
-                  </select>
-                  <select class="downTo shift-select-custom" data-idx="${i}">
-                    <option value="" selected>إلى (لا يوجد)</option>
-                    ${getTimeSelectOptions('')}
-                  </select>
+                  <input type="time" class="downFrom" data-idx="${i}">
+                  <input type="time" class="downTo" data-idx="${i}">
                 </div>
               </div>
 
@@ -2117,6 +2132,8 @@
         const defaultEnd = actualEndTimeInput.value || shiftEndTimeInput.value || '18:00';
 
         const name = clientData ? clientData.name : '';
+        const washNo = clientData ? clientData.washNo : '';
+        const pieceCount = clientData ? clientData.pieceCount : '';
         const legSec = clientData ? clientData.legSec : (baseSec || '');
         const from = clientData ? clientData.from : suggestedStart;
         const to = clientData ? clientData.to : defaultEnd;
@@ -2125,17 +2142,33 @@
         row.className = 'client-entry';
         row.innerHTML = `
           <div class="client-entry-row1">
-            <input type="text" class="clientName" placeholder="اسم العميل أو رقم الموديل" value="${name}">
-            <input type="number" class="clientLegSec" placeholder="زمن الجنب (ث)" value="${legSec}" min="1">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">العميل / الموديل</label>
+              <input type="text" class="clientName" placeholder="اسم العميل" value="${name}">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">رقم الغسلة / اللوت</label>
+              <input type="text" class="clientWashNo" placeholder="رقم الغسلة" value="${washNo}">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">عدد القطع</label>
+              <input type="number" class="clientPieceCount" placeholder="القطع المطلوبة" value="${pieceCount}" min="0">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">زمن الجنب (ث)</label>
+              <input type="number" class="clientLegSec" placeholder="ثواني" value="${legSec}" min="1">
+            </div>
           </div>
           <div class="client-entry-row2">
-            <select class="clientFrom shift-select-custom" title="من الساعة">
-              ${getTimeSelectOptions(from)}
-            </select>
-            <select class="clientTo shift-select-custom" title="إلى الساعة">
-              ${getTimeSelectOptions(to)}
-            </select>
-            <button type="button" class="del-client-btn" title="حذف العميل">×</button>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">من الساعة</label>
+              <input type="time" class="clientFrom" value="${from}">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 10px; margin-bottom: 2px; color: var(--text-dim);">إلى الساعة</label>
+              <input type="time" class="clientTo" value="${to}">
+            </div>
+            <button type="button" class="del-client-btn" title="حذف العميل" style="margin-top: 14px;">×</button>
           </div>
         `;
 
@@ -2272,13 +2305,15 @@
 
             clientEntries.forEach(entry => {
               const name = entry.querySelector('.clientName').value.trim() || `عميل م${i + 1}`;
+              const washNo = entry.querySelector('.clientWashNo')?.value.trim() || '-';
+              const pieceCount = parseInt(entry.querySelector('.clientPieceCount')?.value, 10) || 0;
               const legSec = parseFloat(entry.querySelector('.clientLegSec').value) || baseLegSec || 0;
               const cFrom = entry.querySelector('.clientFrom').value || startStr;
               const cTo = entry.querySelector('.clientTo').value || actualEndStr;
               const grossMins = Math.max(0, calcTimeDifference(cFrom, cTo));
 
               totalClientGrossMins += grossMins;
-              clientsData.push({ name, legSec, cFrom, cTo, grossMins });
+              clientsData.push({ name, washNo, pieceCount, legSec, cFrom, cTo, grossMins });
             });
 
             clientsData.forEach(c => {
@@ -2300,8 +2335,10 @@
 
               clientResults.push({
                 clientName: c.name,
+                washNo: c.washNo,
+                pieceCount: c.pieceCount,
                 machineNum: i + 1,
-                timeRange: `${c.cFrom} - ${c.cTo}`,
+                timeRange: `${formatTimeTo12Hour(c.cFrom)} - ${formatTimeTo12Hour(c.cTo)}`,
                 grossDuration: formatMinsToDuration(c.grossMins),
                 legSec: c.legSec > 0 ? `${c.legSec} ث` : '-',
                 downMins: clientDownMins,
@@ -2347,7 +2384,8 @@
         document.getElementById('kpiTotalDown').textContent = formatMinsToDuration(totalDowntimeAllMachines);
         document.getElementById('resShiftTag').textContent = activeShiftBadge.textContent;
 
-        const todayStr = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        const selectedDate = (shiftDateInput && shiftDateInput.value) ? new Date(shiftDateInput.value + 'T00:00:00') : new Date();
+        const todayStr = selectedDate.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
         
         // Update Official Print Header Elements
         const printDateText = document.getElementById('printDateText');
@@ -2356,7 +2394,7 @@
         const printShiftBadge = document.getElementById('printShiftBadge');
 
         if (printDateText) printDateText.textContent = todayStr;
-        if (printShiftTimes) printShiftTimes.textContent = `${startStr} إلى ${actualEndStr}`;
+        if (printShiftTimes) printShiftTimes.textContent = `${formatTimeTo12Hour(startStr)} إلى ${formatTimeTo12Hour(actualEndStr)}`;
         if (printActualDuration) printActualDuration.textContent = formatMinsToDuration(totalActualMins);
         if (printShiftBadge) printShiftBadge.textContent = activeShiftBadge.textContent;
 
@@ -2419,15 +2457,19 @@
           let totalClientPantsSum = 0;
           let totalClientDownSum = 0;
           let totalClientNetSum = 0;
+          let totalClientPiecesSum = 0;
 
           clientResults.forEach(c => {
             totalClientPantsSum += c.pants;
             totalClientDownSum += c.downMins;
             totalClientNetSum += c.netMins;
+            if (c.pieceCount > 0) totalClientPiecesSum += c.pieceCount;
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td class="text-cell"><span class="tag-badge laser">${c.clientName}</span></td>
+              <td>${c.washNo}</td>
+              <td>${c.pieceCount > 0 ? c.pieceCount.toLocaleString() : '-'}</td>
               <td>ماكينة ${c.machineNum}</td>
               <td>${c.timeRange}</td>
               <td>${c.legSec}</td>
@@ -2443,6 +2485,8 @@
             clientTableFoot.innerHTML = `
               <tr>
                 <td class="text-cell">إجمالي العملاء</td>
+                <td>-</td>
+                <td>${totalClientPiecesSum > 0 ? totalClientPiecesSum.toLocaleString() : '-'}</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -2490,7 +2534,7 @@
 
         let msg = `📊 *تقرير إنتاج قسم الليزر*\n`;
         msg += `📅 *التاريخ:* ${data.dateStr}\n`;
-        msg += `⏰ *الوردية:* ${data.shiftName} (${data.startTime} - ${data.endTime})\n`;
+        msg += `⏰ *الوردية:* ${data.shiftName} (${formatTimeTo12Hour(data.startTime)} إلى ${formatTimeTo12Hour(data.endTime)})\n`;
         msg += `⏱️ *مدة التشغيل الفعلية:* ${data.actualDuration}\n`;
         msg += `─────────────────\n`;
         msg += `👖 *إجمالي الإنتاج:* ${data.totalPants.toLocaleString()} بنطلون\n`;
@@ -2508,7 +2552,9 @@
           msg += `─────────────────\n`;
           msg += `👥 *تفصيل إنتاج العملاء والموديلات:*\n`;
           data.clients.forEach(c => {
-            msg += `• *${c.clientName}* (ماكينة ${c.machineNum}): ${c.pants.toLocaleString()} بنطلون\n`;
+            const washStr = c.washNo && c.washNo !== '-' ? ` (غسلة: ${c.washNo})` : '';
+            const qtyStr = c.pieceCount > 0 ? ` | مطلوب: ${c.pieceCount}` : '';
+            msg += `• *${c.clientName}*${washStr} (ماكينة ${c.machineNum}): ${c.pants.toLocaleString()} بنطلون${qtyStr}\n`;
             msg += `   └ الفترة: ${c.timeRange} | زمن الجنب: ${c.legSec} | الصافي: ${formatMinsToDuration(c.netMins)} | معدل: ${c.perHour}/س\n`;
           });
         }
@@ -2542,6 +2588,7 @@
       function autoSave() {
         try {
           const state = {
+            date: shiftDateInput ? shiftDateInput.value : '',
             startTime: startTimeInput.value,
             shiftEndTime: shiftEndTimeInput.value,
             actualEndTime: actualEndTimeInput.value,
@@ -2566,10 +2613,12 @@
 
             card.querySelectorAll('.client-entry').forEach(entry => {
               mData.clients.push({
-                name: entry.querySelector('.clientName').value,
-                legSec: entry.querySelector('.clientLegSec').value,
-                from: entry.querySelector('.clientFrom').value,
-                to: entry.querySelector('.clientTo').value
+                name: entry.querySelector('.clientName')?.value || '',
+                washNo: entry.querySelector('.clientWashNo')?.value || '',
+                pieceCount: entry.querySelector('.clientPieceCount')?.value || '',
+                legSec: entry.querySelector('.clientLegSec')?.value || '',
+                from: entry.querySelector('.clientFrom')?.value || '',
+                to: entry.querySelector('.clientTo')?.value || ''
               });
             });
 
@@ -2588,6 +2637,7 @@
           if (!saved) return false;
 
           const state = JSON.parse(saved);
+          if (state.date && shiftDateInput) shiftDateInput.value = state.date;
           if (state.startTime) startTimeInput.value = state.startTime;
           if (state.shiftEndTime) shiftEndTimeInput.value = state.shiftEndTime;
           if (state.actualEndTime) actualEndTimeInput.value = state.actualEndTime;
@@ -2649,6 +2699,7 @@
         localStorage.removeItem(STORAGE_KEY);
         resetModal.classList.remove('open');
         renderMachines();
+        if (shiftDateInput) shiftDateInput.value = new Date().toISOString().split('T')[0];
         startTimeInput.value = '08:00';
         shiftEndTimeInput.value = '18:00';
         actualEndTimeInput.value = '18:00';
@@ -2664,6 +2715,9 @@
       // ==========================================
       // INITIALIZATION
       // ==========================================
+      if (shiftDateInput && !shiftDateInput.value) {
+        shiftDateInput.value = new Date().toISOString().split('T')[0];
+      }
       renderMachines();
       const loaded = loadSavedState();
       if (!loaded) {
