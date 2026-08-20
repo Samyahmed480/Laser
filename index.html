@@ -373,57 +373,29 @@
     }
 
     /* ========================================================
-       SHIFT PRESET PILLS / BUTTONS
+       SHIFT PRESET DROPDOWN
        ======================================================== */
-    .shift-presets {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
+    .shift-select-box {
       margin-bottom: 12px;
     }
 
-    @media (max-width: 340px) {
-      .shift-presets {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .preset-pill {
+    .shift-select-custom {
+      height: 46px;
       background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 6px;
-      font-size: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0 14px 0 38px;
+      font-size: 13.5px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--text);
       cursor: pointer;
-      text-align: center;
+      box-shadow: var(--shadow-sm);
       transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
     }
 
-    .preset-pill span.sub {
-      font-size: 10.5px;
-      font-weight: 500;
-      font-family: var(--font-mono);
-      color: var(--text-dim);
-    }
-
-    .preset-pill:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--denim);
-    }
-
-    .preset-pill.active {
-      background: var(--denim-dim);
-      border-color: var(--denim);
-      color: var(--denim);
-    }
-
-    .preset-pill.active span.sub {
-      color: var(--denim);
+    .shift-select-custom:focus {
+      border-color: var(--laser);
+      box-shadow: 0 0 0 3px var(--laser-glow);
     }
 
     /* ========================================================
@@ -1437,25 +1409,9 @@
         font-size: 11px;
       }
 
-      /* Print Signatures Footer */
-      .print-footer {
-        display: flex !important;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 18px;
-        padding-top: 8px;
-        border-top: 1px dashed #666666;
-        font-size: 11px;
-        font-weight: 700;
-      }
-
-      .print-footer div {
-        text-align: center;
-        width: 30%;
-      }
     }
 
-    .print-header, .print-footer {
+    .print-header {
       display: none;
     }
   </style>
@@ -1539,24 +1495,16 @@
       <span class="tag-badge laser" id="activeShiftBadge">10 س صباحي</span>
     </div>
 
-    <!-- Quick Shift Presets -->
-    <div class="shift-presets">
-      <button type="button" class="preset-pill active" data-preset="10-morning" data-start="08:00" data-end="18:00">
-        ☀️ 10 ساعات صباحي
-        <span class="sub">08:00 ص - 06:00 م</span>
-      </button>
-      <button type="button" class="preset-pill" data-preset="10-evening" data-start="18:00" data-end="04:00">
-        🌙 10 ساعات مسائي
-        <span class="sub">06:00 م - 04:00 ص</span>
-      </button>
-      <button type="button" class="preset-pill" data-preset="12-morning" data-start="08:00" data-end="20:00">
-        ☀️ 12 ساعة صباحي
-        <span class="sub">08:00 ص - 08:00 م</span>
-      </button>
-      <button type="button" class="preset-pill" data-preset="12-evening" data-start="20:00" data-end="08:00">
-        🌙 12 ساعة مسائي
-        <span class="sub">08:00 م - 08:00 ص</span>
-      </button>
+    <!-- Shift Preset Dropdown Selector -->
+    <div class="shift-select-box">
+      <label for="shiftPresetSelect">⚡ اختر نظام الوردية:</label>
+      <select id="shiftPresetSelect" class="shift-select-custom">
+        <option value="10-morning" data-start="08:00" data-end="18:00" data-label="10 س صباحي" selected>☀️ وردية 10 ساعات صباحي (08:00 ص - 06:00 م)</option>
+        <option value="10-evening" data-start="18:00" data-end="04:00" data-label="10 س مسائي">🌙 وردية 10 ساعات مسائي (06:00 م - 04:00 ص)</option>
+        <option value="12-morning" data-start="08:00" data-end="20:00" data-label="12 س صباحي">☀️ وردية 12 ساعة صباحي (08:00 ص - 08:00 م)</option>
+        <option value="12-evening" data-start="20:00" data-end="08:00" data-label="12 س مسائي">🌙 وردية 12 ساعة مسائي (08:00 م - 08:00 ص)</option>
+        <option value="custom" data-start="" data-end="" data-label="مخصص">⚙️ وردية مخصصة (تحديد الأوقات يدوياً)</option>
+      </select>
     </div>
 
     <!-- Time Inputs Grid: Responsive with clear visual order -->
@@ -1609,14 +1557,6 @@
     <button type="button" class="tab-btn" data-filter="3">
       ماكينة 4 <span class="tab-badge" id="badgeM3">0</span>
     </button>
-  </div>
-
-  <!-- Global Quick Stoppages Sync Banner -->
-  <div class="quick-sync-box">
-    <div>
-      <p>💡 ضبط الراحة وسحب الغاز لكل الماكينات؟</p>
-    </div>
-    <button type="button" class="sync-btn" id="syncStoppagesBtn">تطبيق على الكل</button>
   </div>
 
   <!-- Machines Container -->
@@ -1773,22 +1713,6 @@
     </button>
   </div>
 
-  <!-- Print Only Footer / Official Sign-offs -->
-  <div class="print-footer">
-    <div>
-      <p style="margin-bottom: 25px;">فني / مهندس الوردية</p>
-      <p>.......................................</p>
-    </div>
-    <div>
-      <p style="margin-bottom: 25px;">مشرف الجودة والإنتاج</p>
-      <p>.......................................</p>
-    </div>
-    <div>
-      <p style="margin-bottom: 25px;">اعتماد مدير المصنع</p>
-      <p>.......................................</p>
-    </div>
-  </div>
-
   <!-- Confirmation Modal for Reset -->
   <div class="modal-backdrop" id="resetModal">
     <div class="modal-box">
@@ -1807,9 +1731,9 @@
     (function() {
       'use strict';
 
-      const STORAGE_KEY = 'laser_production_pro_v2';
+      const STORAGE_KEY = 'laser_production_pro_v4';
       const THEME_KEY = 'laser_app_theme';
-      const MACHINE_DEFAULTS = [32, 41, 30, 55];
+      const MACHINE_DEFAULTS = [0, 0, 0, 0];
       const NUM_MACHINES = 4;
 
       // DOM Elements
@@ -1915,23 +1839,28 @@
         autoSave();
       }
 
-      // Shift Preset Buttons Click Handler
-      document.querySelectorAll('.preset-pill').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
+      // Shift Preset Dropdown Change Handler
+      const shiftPresetSelect = document.getElementById('shiftPresetSelect');
+      if (shiftPresetSelect) {
+        shiftPresetSelect.addEventListener('change', () => {
+          const opt = shiftPresetSelect.options[shiftPresetSelect.selectedIndex];
+          if (!opt) return;
 
-          const start = btn.dataset.start;
-          const end = btn.dataset.end;
-          startTimeInput.value = start;
-          shiftEndTimeInput.value = end;
-          actualEndTimeInput.value = end;
+          const start = opt.dataset.start;
+          const end = opt.dataset.end;
+          const label = opt.dataset.label || opt.text;
 
-          activeShiftBadge.textContent = btn.textContent.trim().split('\n')[0];
+          if (start && end) {
+            startTimeInput.value = start;
+            shiftEndTimeInput.value = end;
+            actualEndTimeInput.value = end;
+          }
+
+          activeShiftBadge.textContent = label;
           updateShiftStats();
-          showToast(`تم اختيار ${btn.textContent.trim().split('\n')[0]}`, '⏰');
+          showToast(`تم اختيار ${label}`, '⏰');
         });
-      });
+      }
 
       [startTimeInput, shiftEndTimeInput, actualEndTimeInput].forEach(inp => {
         inp.addEventListener('input', updateShiftStats);
@@ -1939,7 +1868,25 @@
       });
 
       // ==========================================
-      // BUILD MACHINES DOM
+      // TIME DROPDOWN HELPER (30-MIN INTERVALS)
+      // ==========================================
+      function getTimeSelectOptions(selectedValue) {
+        let html = '';
+        for (let h = 0; h < 24; h++) {
+          for (let m of [0, 30]) {
+            const timeVal = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            const hour12 = h % 12 === 0 ? 12 : h % 12;
+            const period = h < 12 ? 'ص' : 'م';
+            const label = `${String(hour12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${period}`;
+            const isSel = timeVal === selectedValue ? ' selected' : '';
+            html += `<option value="${timeVal}"${isSel}>${label}</option>`;
+          }
+        }
+        return html;
+      }
+
+      // ==========================================
+      // BUILD MACHINES DOM (CLIENT FIRST & ZERO DEFAULT STOPPAGE)
       // ==========================================
       function renderMachines() {
         machinesListEl.innerHTML = '';
@@ -1960,16 +1907,7 @@
               <span class="machine-status-tag" id="statusTag_${i}">جاهزة للعمل</span>
             </div>
 
-            <div class="stepper-box">
-              <span class="stepper-label">زمن الجنب الأساسي للماكينة:</span>
-              <div class="stepper-controls">
-                <button type="button" class="step-btn dec-sec" data-idx="${i}">-</button>
-                <input type="number" class="secInput" data-idx="${i}" value="${defaultSec}" min="1" max="300">
-                <button type="button" class="step-btn inc-sec" data-idx="${i}">+</button>
-                <span style="font-size:12px; font-weight:700; color:var(--text-muted);">ث</span>
-              </div>
-            </div>
-
+            <!-- 1. العملاء والتشغيلات الخاصة (أولاً) -->
             <button type="button" class="drawer-btn" data-target="clientDrawer_${i}">
               <span>👥 العملاء والتشغيلات الخاصة</span>
               <span class="drawer-val" id="clientSummary_${i}">
@@ -1983,6 +1921,7 @@
               </button>
             </div>
 
+            <!-- 2. التوقفات والأعطال (ثانياً - تبدأ بصفر) -->
             <button type="button" class="drawer-btn" data-target="stopDrawer_${i}">
               <span>🛑 التوقفات والأعطال</span>
               <span class="drawer-val" id="stopSummary_${i}">
@@ -1993,30 +1932,70 @@
               <div class="stoppage-grid">
                 <div class="form-group">
                   <label>بداية الراحة (+30د تلقائي)</label>
-                  <input type="time" class="restFrom" data-idx="${i}">
+                  <select class="restFrom shift-select-custom" data-idx="${i}">
+                    <option value="" selected>لا يوجد (0 د)</option>
+                    ${getTimeSelectOptions('')}
+                  </select>
                 </div>
                 <div class="form-group">
                   <label>سحب الغاز (+10د تلقائي)</label>
-                  <input type="time" class="gasFrom" data-idx="${i}">
+                  <select class="gasFrom shift-select-custom" data-idx="${i}">
+                    <option value="" selected>لا يوجد (0 د)</option>
+                    ${getTimeSelectOptions('')}
+                  </select>
                 </div>
               </div>
 
               <div class="form-group">
-                <label>تغيير مقاسات (دقيقة)</label>
-                <input type="number" class="sizeInput" data-idx="${i}" value="10" min="0">
+                <label>تغيير مقاسات</label>
+                <select class="sizeInput shift-select-custom" data-idx="${i}">
+                  <option value="0" selected>0 دقيقة (بدون تغيير مقاس)</option>
+                  <option value="5">5 دقائق</option>
+                  <option value="10">10 دقائق</option>
+                  <option value="15">15 دقيقة</option>
+                  <option value="20">20 دقيقة</option>
+                  <option value="30">30 دقيقة</option>
+                  <option value="45">45 دقيقة</option>
+                  <option value="60">60 دقيقة (ساعة)</option>
+                </select>
               </div>
 
               <div class="form-group">
                 <label>عطل طارئ (من - إلى)</label>
                 <div class="grid-2">
-                  <input type="time" class="downFrom" data-idx="${i}">
-                  <input type="time" class="downTo" data-idx="${i}">
+                  <select class="downFrom shift-select-custom" data-idx="${i}">
+                    <option value="" selected>من (لا يوجد)</option>
+                    ${getTimeSelectOptions('')}
+                  </select>
+                  <select class="downTo shift-select-custom" data-idx="${i}">
+                    <option value="" selected>إلى (لا يوجد)</option>
+                    ${getTimeSelectOptions('')}
+                  </select>
                 </div>
               </div>
 
               <div class="form-group">
                 <label>سبب العطل (اختياري)</label>
-                <input type="text" class="reasonInput" data-idx="${i}" placeholder="مثال: صيانة سيرفو، كهرباء">
+                <input type="text" class="reasonInput" data-idx="${i}" placeholder="مثال: صيانة سيرفو، عطل كهرباء">
+              </div>
+            </div>
+
+            <!-- 3. زمن الجنب الأساسي للماكينة (قابل للفتح والغلق) -->
+            <button type="button" class="drawer-btn" data-target="secDrawer_${i}">
+              <span>⏱️ زمن الجنب الأساسي للماكينة</span>
+              <span class="drawer-val" id="secSummary_${i}">
+                ${defaultSec} ثانية <span class="chev">›</span>
+              </span>
+            </button>
+            <div class="drawer-content" id="secDrawer_${i}">
+              <div class="stepper-box" style="margin-bottom: 0;">
+                <span class="stepper-label">تعديل زمن الجنب الأساسي:</span>
+                <div class="stepper-controls">
+                  <button type="button" class="step-btn dec-sec" data-idx="${i}">-</button>
+                  <input type="number" class="secInput" data-idx="${i}" value="${defaultSec}" min="1" max="300">
+                  <button type="button" class="step-btn inc-sec" data-idx="${i}">+</button>
+                  <span style="font-size:12px; font-weight:700; color:var(--text-muted);">ث</span>
+                </div>
               </div>
             </div>
           `;
@@ -2052,10 +2031,14 @@
             const idx = btn.dataset.idx;
             const input = machinesListEl.querySelector(`.secInput[data-idx="${idx}"]`);
             if (input) {
-              let val = parseInt(input.value, 10) || 30;
+              let val = parseInt(input.value, 10) || 0;
               if (btn.classList.contains('inc-sec')) val += 1;
-              if (btn.classList.contains('dec-sec')) val = Math.max(1, val - 1);
+              if (btn.classList.contains('dec-sec')) val = Math.max(0, val - 1);
               input.value = val;
+              const summaryEl = document.getElementById(`secSummary_${idx}`);
+              if (summaryEl) {
+                summaryEl.innerHTML = `${val} ثانية <span class="chev">›</span>`;
+              }
               autoSave();
             }
           };
@@ -2071,26 +2054,6 @@
 
         if (!staticEventsAttached) {
           staticEventsAttached = true;
-
-          // Global Sync Break & Gas Across all 4 machines
-          document.getElementById('syncStoppagesBtn').addEventListener('click', () => {
-            const firstRest = machinesListEl.querySelector('.restFrom')?.value || '';
-            const firstGas = machinesListEl.querySelector('.gasFrom')?.value || '';
-            const firstSize = machinesListEl.querySelector('.sizeInput')?.value || '10';
-
-            if (!firstRest && !firstGas) {
-              showToast('يرجى إدخال وقت الراحة أو سحب الغاز في ماكينة 1 أولاً', 'ℹ️');
-              return;
-            }
-
-            document.querySelectorAll('.restFrom').forEach(inp => inp.value = firstRest);
-            document.querySelectorAll('.gasFrom').forEach(inp => inp.value = firstGas);
-            document.querySelectorAll('.sizeInput').forEach(inp => inp.value = firstSize);
-
-            updateAllSummaries();
-            autoSave();
-            showToast('تمت مزامنة التوقفات على جميع الماكينات', '✓', 'success');
-          });
 
           // Tab Filter Switching
           document.querySelectorAll('.tab-btn').forEach(tab => {
@@ -2111,11 +2074,13 @@
 
           // Machine input listeners
           machinesListEl.addEventListener('input', (e) => {
-            if (e.target.classList.contains('restFrom')) {
+            if (e.target.classList.contains('secInput')) {
+              const idx = e.target.dataset.idx;
               const val = e.target.value;
-              document.querySelectorAll('.restFrom').forEach(inp => {
-                if (inp !== e.target && !inp.value) inp.value = val;
-              });
+              const summaryEl = document.getElementById(`secSummary_${idx}`);
+              if (summaryEl) {
+                summaryEl.innerHTML = `${val} ثانية <span class="chev">›</span>`;
+              }
             }
             updateAllSummaries();
             autoSave();
@@ -2162,8 +2127,12 @@
             <input type="number" class="clientLegSec" placeholder="زمن الجنب (ث)" value="${legSec}" min="1">
           </div>
           <div class="client-entry-row2">
-            <input type="time" class="clientFrom" value="${from}" title="من الساعة">
-            <input type="time" class="clientTo" value="${to}" title="إلى الساعة">
+            <select class="clientFrom shift-select-custom" title="من الساعة">
+              ${getTimeSelectOptions(from)}
+            </select>
+            <select class="clientTo shift-select-custom" title="إلى الساعة">
+              ${getTimeSelectOptions(to)}
+            </select>
             <button type="button" class="del-client-btn" title="حذف العميل">×</button>
           </div>
         `;
@@ -2239,6 +2208,12 @@
           const stopSummary = document.getElementById(`stopSummary_${i}`);
           if (stopSummary) {
             stopSummary.innerHTML = `${stopMins} دقيقة <span class="chev">›</span>`;
+          }
+
+          const secVal = card.querySelector('.secInput')?.value || MACHINE_DEFAULTS[i];
+          const secSummary = document.getElementById(`secSummary_${i}`);
+          if (secSummary) {
+            secSummary.innerHTML = `${secVal} ثانية <span class="chev">›</span>`;
           }
         }
       }
@@ -2324,8 +2299,12 @@
               });
             });
           } else {
-            const netSeconds = machineNetMins * 60;
-            machineTotalPants = Math.floor(netSeconds / (2 * baseLegSec));
+            if (baseLegSec > 0) {
+              const netSeconds = machineNetMins * 60;
+              machineTotalPants = Math.floor(netSeconds / (2 * baseLegSec));
+            } else {
+              machineTotalPants = 0;
+            }
           }
 
           totalPantsOverall += machineTotalPants;
@@ -2524,7 +2503,7 @@
             startTime: startTimeInput.value,
             shiftEndTime: shiftEndTimeInput.value,
             actualEndTime: actualEndTimeInput.value,
-            activePreset: document.querySelector('.preset-pill.active')?.dataset.preset || '10-morning',
+            activePreset: shiftPresetSelect?.value || '10-morning',
             machines: []
           };
 
@@ -2533,13 +2512,13 @@
             if (!card) continue;
 
             const mData = {
-              secInput: card.querySelector('.secInput').value,
-              restFrom: card.querySelector('.restFrom').value,
-              gasFrom: card.querySelector('.gasFrom').value,
-              sizeInput: card.querySelector('.sizeInput').value,
-              downFrom: card.querySelector('.downFrom').value,
-              downTo: card.querySelector('.downTo').value,
-              reasonInput: card.querySelector('.reasonInput').value,
+              secInput: card.querySelector('.secInput')?.value || '0',
+              restFrom: card.querySelector('.restFrom')?.value || '',
+              gasFrom: card.querySelector('.gasFrom')?.value || '',
+              sizeInput: card.querySelector('.sizeInput')?.value || '0',
+              downFrom: card.querySelector('.downFrom')?.value || '',
+              downTo: card.querySelector('.downTo')?.value || '',
+              reasonInput: card.querySelector('.reasonInput')?.value || '',
               clients: []
             };
 
@@ -2571,15 +2550,12 @@
           if (state.shiftEndTime) shiftEndTimeInput.value = state.shiftEndTime;
           if (state.actualEndTime) actualEndTimeInput.value = state.actualEndTime;
 
-          if (state.activePreset) {
-            document.querySelectorAll('.preset-pill').forEach(btn => {
-              if (btn.dataset.preset === state.activePreset) {
-                btn.classList.add('active');
-                activeShiftBadge.textContent = btn.textContent.trim().split('\n')[0];
-              } else {
-                btn.classList.remove('active');
-              }
-            });
+          if (state.activePreset && shiftPresetSelect) {
+            shiftPresetSelect.value = state.activePreset;
+            const opt = shiftPresetSelect.options[shiftPresetSelect.selectedIndex];
+            if (opt) {
+              activeShiftBadge.textContent = opt.dataset.label || opt.text;
+            }
           }
 
           if (Array.isArray(state.machines)) {
@@ -2587,13 +2563,13 @@
               const card = document.getElementById(`machineCard_${i}`);
               if (!card || !mData) return;
 
-              if (mData.secInput) card.querySelector('.secInput').value = mData.secInput;
-              if (mData.restFrom) card.querySelector('.restFrom').value = mData.restFrom;
-              if (mData.gasFrom) card.querySelector('.gasFrom').value = mData.gasFrom;
-              if (mData.sizeInput) card.querySelector('.sizeInput').value = mData.sizeInput;
-              if (mData.downFrom) card.querySelector('.downFrom').value = mData.downFrom;
-              if (mData.downTo) card.querySelector('.downTo').value = mData.downTo;
-              if (mData.reasonInput) card.querySelector('.reasonInput').value = mData.reasonInput;
+              card.querySelector('.secInput').value = (mData.secInput !== undefined && mData.secInput !== '') ? mData.secInput : '0';
+              card.querySelector('.restFrom').value = mData.restFrom || '';
+              card.querySelector('.gasFrom').value = mData.gasFrom || '';
+              card.querySelector('.sizeInput').value = mData.sizeInput || '0';
+              card.querySelector('.downFrom').value = mData.downFrom || '';
+              card.querySelector('.downTo').value = mData.downTo || '';
+              card.querySelector('.reasonInput').value = mData.reasonInput || '';
 
               if (Array.isArray(mData.clients)) {
                 mData.clients.forEach(c => {
@@ -2634,8 +2610,8 @@
         startTimeInput.value = '08:00';
         shiftEndTimeInput.value = '18:00';
         actualEndTimeInput.value = '18:00';
-        document.querySelectorAll('.preset-pill').forEach((b, i) => b.classList.toggle('active', i === 0));
-        activeShiftBadge.textContent = '10 ساعات صباحي';
+        if (shiftPresetSelect) shiftPresetSelect.value = '10-morning';
+        activeShiftBadge.textContent = '10 س صباحي';
         resultsContainer.style.display = 'none';
         window._lastCalculation = null;
         updateShiftStats();
