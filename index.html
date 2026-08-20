@@ -1668,9 +1668,11 @@
               <th>توقف مخصوم</th>
               <th>الصافي</th>
               <th>البناطيل</th>
+              <th>معدل/س</th>
             </tr>
           </thead>
           <tbody id="clientTableBody"></tbody>
+          <tfoot id="clientDetailTableFoot"></tfoot>
         </table>
       </div>
     </div>
@@ -2101,7 +2103,7 @@
         if (!clientList) return;
 
         const baseSecInput = machinesListEl.querySelector(`.secInput[data-idx="${machineIdx}"]`);
-        const baseSec = baseSecInput ? baseSecInput.value : '30';
+        const baseSec = baseSecInput && parseFloat(baseSecInput.value) > 0 ? baseSecInput.value : '';
 
         let suggestedStart = startTimeInput.value || '08:00';
         const existingEntries = clientList.querySelectorAll('.client-entry');
@@ -2115,7 +2117,7 @@
         const defaultEnd = actualEndTimeInput.value || shiftEndTimeInput.value || '18:00';
 
         const name = clientData ? clientData.name : '';
-        const legSec = clientData ? clientData.legSec : baseSec;
+        const legSec = clientData ? clientData.legSec : (baseSec || '');
         const from = clientData ? clientData.from : suggestedStart;
         const to = clientData ? clientData.to : defaultEnd;
 
@@ -2240,7 +2242,7 @@
 
         for (let i = 0; i < NUM_MACHINES; i++) {
           const card = document.getElementById(`machineCard_${i}`);
-          const baseLegSec = parseFloat(card.querySelector('.secInput').value) || MACHINE_DEFAULTS[i];
+          const baseLegSec = parseFloat(card.querySelector('.secInput').value) || 0;
 
           let machineDowntime = 0;
           const restFrom = card.querySelector('.restFrom').value;
@@ -2270,32 +2272,42 @@
 
             clientEntries.forEach(entry => {
               const name = entry.querySelector('.clientName').value.trim() || `عميل م${i + 1}`;
-              const legSec = parseFloat(entry.querySelector('.clientLegSec').value) || baseLegSec;
+              const legSec = parseFloat(entry.querySelector('.clientLegSec').value) || baseLegSec || 0;
               const cFrom = entry.querySelector('.clientFrom').value || startStr;
               const cTo = entry.querySelector('.clientTo').value || actualEndStr;
-              const grossMins = calcTimeDifference(cFrom, cTo);
+              const grossMins = Math.max(0, calcTimeDifference(cFrom, cTo));
 
               totalClientGrossMins += grossMins;
               clientsData.push({ name, legSec, cFrom, cTo, grossMins });
             });
 
             clientsData.forEach(c => {
-              const ratio = totalClientGrossMins > 0 ? (c.grossMins / totalClientGrossMins) : (1 / clientsData.length);
-              const clientDownMins = machineDowntime * ratio;
+              const ratio = totalClientGrossMins > 0 ? (c.grossMins / totalClientGrossMins) : 0;
+              const clientDownMins = Math.round(machineDowntime * ratio);
               const clientNetMins = Math.max(0, c.grossMins - clientDownMins);
               const clientNetSecs = clientNetMins * 60;
-              const clientPants = Math.floor(clientNetSecs / (2 * c.legSec));
+              
+              let clientPants = 0;
+              if (c.legSec > 0 && clientNetSecs > 0) {
+                clientPants = Math.floor(clientNetSecs / (2 * c.legSec));
+              }
+              if (!isFinite(clientPants) || isNaN(clientPants) || clientPants < 0) {
+                clientPants = 0;
+              }
 
               machineTotalPants += clientPants;
+              const cRate = c.grossMins > 0 ? (clientPants / (c.grossMins / 60)).toFixed(1) : '0.0';
 
               clientResults.push({
                 clientName: c.name,
                 machineNum: i + 1,
                 timeRange: `${c.cFrom} - ${c.cTo}`,
-                legSec: c.legSec,
-                downMins: Math.round(clientDownMins),
-                netMins: Math.round(clientNetMins),
-                pants: clientPants
+                grossDuration: formatMinsToDuration(c.grossMins),
+                legSec: c.legSec > 0 ? `${c.legSec} ث` : '-',
+                downMins: clientDownMins,
+                netMins: clientNetMins,
+                pants: clientPants,
+                perHour: cRate
               });
             });
           } else {
@@ -2307,12 +2319,16 @@
             }
           }
 
+          if (!isFinite(machineTotalPants) || isNaN(machineTotalPants) || machineTotalPants < 0) {
+            machineTotalPants = 0;
+          }
+
           totalPantsOverall += machineTotalPants;
-          const machinePerHour = totalActualMins > 0 ? (machineTotalPants / (totalActualMins / 60)).toFixed(1) : '0';
+          const machinePerHour = totalActualMins > 0 ? (machineTotalPants / (totalActualMins / 60)).toFixed(1) : '0.0';
 
           machineResults.push({
             machineNum: i + 1,
-            legSec: baseLegSec,
+            legSec: baseLegSec > 0 ? `${baseLegSec} ث` : '-',
             downtimeMins: machineDowntime,
             netMins: machineNetMins,
             pants: machineTotalPants,
@@ -2321,7 +2337,7 @@
         }
 
         const actualHours = totalActualMins / 60;
-        const totalPerHour = actualHours > 0 ? Math.round(totalPantsOverall / actualHours) : 0;
+        const totalPerHour = (actualHours > 0 && isFinite(totalPantsOverall)) ? Math.round(totalPantsOverall / actualHours) : 0;
         const totalCapacityMins = totalActualMins * NUM_MACHINES;
         const efficiencyPercent = totalCapacityMins > 0 ? Math.round((totalNetOperatingMinsAllMachines / totalCapacityMins) * 100) : 0;
 
@@ -2351,7 +2367,7 @@
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td class="text-cell"><span class="tag-badge denim">ماكينة ${m.machineNum}</span></td>
-            <td>${m.legSec} ث</td>
+            <td>${m.legSec}</td>
             <td><span style="color:var(--warning);">${m.downtimeMins} د</span></td>
             <td>${formatMinsToDuration(m.netMins)}</td>
             <td style="color:var(--laser); font-weight:800; font-size:14px;">${m.pants.toLocaleString()}</td>
@@ -2395,23 +2411,48 @@
         // Client Results Table
         const clientResultsCard = document.getElementById('clientResultsCard');
         const clientTableBody = document.getElementById('clientTableBody');
+        const clientTableFoot = document.getElementById('clientDetailTableFoot');
         clientTableBody.innerHTML = '';
 
         if (clientResults.length > 0) {
           clientResultsCard.style.display = 'block';
+          let totalClientPantsSum = 0;
+          let totalClientDownSum = 0;
+          let totalClientNetSum = 0;
+
           clientResults.forEach(c => {
+            totalClientPantsSum += c.pants;
+            totalClientDownSum += c.downMins;
+            totalClientNetSum += c.netMins;
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td class="text-cell"><span class="tag-badge laser">${c.clientName}</span></td>
               <td>ماكينة ${c.machineNum}</td>
               <td>${c.timeRange}</td>
-              <td>${c.legSec} ث</td>
+              <td>${c.legSec}</td>
               <td>${c.downMins} د</td>
               <td>${formatMinsToDuration(c.netMins)}</td>
-              <td style="color:var(--laser); font-weight:800;">${c.pants.toLocaleString()}</td>
+              <td style="color:var(--laser); font-weight:800; font-size:14px;">${c.pants.toLocaleString()}</td>
+              <td>${c.perHour}</td>
             `;
             clientTableBody.appendChild(tr);
           });
+
+          if (clientTableFoot) {
+            clientTableFoot.innerHTML = `
+              <tr>
+                <td class="text-cell">إجمالي العملاء</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${totalClientDownSum} د</td>
+                <td>${formatMinsToDuration(totalClientNetSum)}</td>
+                <td style="font-weight:800; font-size:14px; color:var(--laser);">${totalClientPantsSum.toLocaleString()}</td>
+                <td>${(actualHours > 0 ? (totalClientPantsSum / actualHours).toFixed(1) : '0.0')}</td>
+              </tr>
+            `;
+          }
         } else {
           clientResultsCard.style.display = 'none';
         }
@@ -2465,9 +2506,10 @@
 
         if (data.clients && data.clients.length > 0) {
           msg += `─────────────────\n`;
-          msg += `👥 *تفاصيل العملاء:*\n`;
+          msg += `👥 *تفصيل إنتاج العملاء والموديلات:*\n`;
           data.clients.forEach(c => {
             msg += `• *${c.clientName}* (ماكينة ${c.machineNum}): ${c.pants.toLocaleString()} بنطلون\n`;
+            msg += `   └ الفترة: ${c.timeRange} | زمن الجنب: ${c.legSec} | الصافي: ${formatMinsToDuration(c.netMins)} | معدل: ${c.perHour}/س\n`;
           });
         }
 
