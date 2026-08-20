@@ -922,14 +922,14 @@
 
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-bottom: 12px;
     }
 
-    @media (min-width: 600px) {
+    @media (max-width: 480px) {
       .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1386,13 +1386,13 @@
 
     .a4-preview-sheet .print-meta-grid {
       display: grid;
-      grid-template-columns: 1.5fr 1.2fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 4px;
       background: #f8fafc;
       border: 1px solid #999999;
       border-radius: 3px;
       padding: 3px 6px;
-      font-size: 9.5px;
+      font-size: 9px;
     }
 
     .a4-preview-sheet .card {
@@ -1418,9 +1418,9 @@
 
     .a4-preview-sheet .kpi-grid {
       display: grid !important;
-      grid-template-columns: repeat(4, 1fr) !important;
-      gap: 4px !important;
-      margin-bottom: 1px !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 6px !important;
+      margin-bottom: 2px !important;
     }
 
     .a4-preview-sheet .kpi-card {
@@ -1588,7 +1588,7 @@
       /* KPI Print Grid */
       .kpi-grid {
         display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
         gap: 6px !important;
         margin-bottom: 4px !important;
       }
@@ -1715,13 +1715,13 @@
 
       .print-meta-grid {
         display: grid !important;
-        grid-template-columns: 1.5fr 1.2fr 1fr !important;
+        grid-template-columns: repeat(4, 1fr) !important;
         gap: 6px !important;
         background: #f8fafc !important;
         border: 1px solid #999999 !important;
         border-radius: 4px !important;
         padding: 4px 8px !important;
-        font-size: 10.5px !important;
+        font-size: 10px !important;
       }
 
     }
@@ -1753,10 +1753,13 @@
         <strong>📅 التاريخ:</strong> <span id="printDateText">-</span>
       </div>
       <div class="print-meta-item">
-        <strong>⏰ المواعيد:</strong> <span id="printShiftTimes">08:00 إلى 18:00</span>
+        <strong>⏰ مواعيد الوردية:</strong> <span id="printShiftTimes">08:00 ص إلى 06:00 م</span>
       </div>
       <div class="print-meta-item">
         <strong>⏱️ التشغيل الفعلي:</strong> <span id="printActualDuration">10 ساعات</span>
+      </div>
+      <div class="print-meta-item">
+        <strong>🚪 الخروج المبكر:</strong> <span id="printEarlyLeave">لا يوجد</span>
       </div>
     </div>
   </div>
@@ -1900,7 +1903,7 @@
         <span class="tag-badge denim" id="resShiftTag">10 ساعات</span>
       </div>
 
-      <!-- KPI Grid -->
+      <!-- KPI Grid (3 Core Metrics) -->
       <div class="kpi-grid">
         <div class="kpi-card hero">
           <span class="kpi-icon">👖</span>
@@ -1914,13 +1917,6 @@
           <div class="kpi-title">المعدل بالساعة</div>
           <div class="kpi-num denim" id="kpiPerHour">0</div>
           <div class="kpi-unit">بنطلون / س</div>
-        </div>
-
-        <div class="kpi-card">
-          <span class="kpi-icon">🎯</span>
-          <div class="kpi-title">كفاءة التشغيل</div>
-          <div class="kpi-num success" id="kpiEfficiency">0%</div>
-          <div class="kpi-unit">نسبة الوقت الصافي</div>
         </div>
 
         <div class="kpi-card">
@@ -2728,7 +2724,6 @@
 
         document.getElementById('kpiTotalPants').textContent = totalPantsOverall.toLocaleString('en-US');
         document.getElementById('kpiPerHour').textContent = totalPerHour.toLocaleString('en-US');
-        document.getElementById('kpiEfficiency').textContent = `${efficiencyPercent}%`;
         document.getElementById('kpiTotalDown').textContent = formatMinsToDuration(totalDowntimeAllMachines);
         document.getElementById('resShiftTag').textContent = activeShiftBadge.textContent;
 
@@ -2739,11 +2734,28 @@
         const printDateText = document.getElementById('printDateText');
         const printShiftTimes = document.getElementById('printShiftTimes');
         const printActualDuration = document.getElementById('printActualDuration');
+        const printEarlyLeave = document.getElementById('printEarlyLeave');
         const printShiftBadge = document.getElementById('printShiftBadge');
 
+        const plannedEndStr = shiftEndTimeInput.value || '18:00';
+        const plannedMins = calcTimeDifference(startStr, plannedEndStr);
+        let earlyLeaveStr = 'لا يوجد';
+
+        if (actualEndStr && actualEndStr !== plannedEndStr) {
+          const actualMins = calcTimeDifference(startStr, actualEndStr);
+          if (actualMins < plannedMins) {
+            const diffM = plannedMins - actualMins;
+            earlyLeaveStr = `${formatTimeTo12Hour(actualEndStr)} (مبكر ${formatMinsToDuration(diffM)})`;
+          } else if (actualMins > plannedMins) {
+            const extraM = actualMins - plannedMins;
+            earlyLeaveStr = `${formatTimeTo12Hour(actualEndStr)} (إضافي ${formatMinsToDuration(extraM)})`;
+          }
+        }
+
         if (printDateText) printDateText.textContent = todayStr;
-        if (printShiftTimes) printShiftTimes.textContent = `${formatTimeTo12Hour(startStr)} إلى ${formatTimeTo12Hour(actualEndStr)}`;
+        if (printShiftTimes) printShiftTimes.textContent = `${formatTimeTo12Hour(startStr)} إلى ${formatTimeTo12Hour(plannedEndStr)}`;
         if (printActualDuration) printActualDuration.textContent = formatMinsToDuration(totalActualMins);
+        if (printEarlyLeave) printEarlyLeave.textContent = earlyLeaveStr;
         if (printShiftBadge) printShiftBadge.textContent = activeShiftBadge.textContent;
 
         // Populate Detail Table Body
@@ -2858,10 +2870,11 @@
           shiftName: activeShiftBadge.textContent,
           startTime: startStr,
           endTime: actualEndStr,
+          plannedEnd: plannedEndStr,
           actualDuration: formatMinsToDuration(totalActualMins),
+          earlyLeave: earlyLeaveStr,
           totalPants: totalPantsOverall,
           perHour: totalPerHour,
-          efficiency: efficiencyPercent,
           totalDown: formatMinsToDuration(totalDowntimeAllMachines),
           machines: machineResults,
           clients: clientResults
@@ -2874,20 +2887,20 @@
       // WHATSAPP SHARE GENERATOR
       // ==========================================
       document.getElementById('shareWhatsappBtn').addEventListener('click', () => {
-        if (!window._lastCalculation) {
-          calculateProduction();
-        }
+        calculateProduction();
         const data = window._lastCalculation;
         if (!data) return;
 
         let msg = `📊 *تقرير إنتاج قسم الليزر*\n`;
         msg += `📅 *التاريخ:* ${data.dateStr}\n`;
-        msg += `⏰ *الوردية:* ${data.shiftName} (${formatTimeTo12Hour(data.startTime)} إلى ${formatTimeTo12Hour(data.endTime)})\n`;
-        msg += `⏱️ *مدة التشغيل الفعلية:* ${data.actualDuration}\n`;
+        msg += `⏰ *مواعيد الوردية:* ${formatTimeTo12Hour(data.startTime)} إلى ${formatTimeTo12Hour(data.plannedEnd || data.endTime)}\n`;
+        msg += `⏱️ *التشغيل الفعلي:* ${data.actualDuration}\n`;
+        if (data.earlyLeave && data.earlyLeave !== 'لا يوجد') {
+          msg += `🚪 *الخروج المبكر:* ${data.earlyLeave}\n`;
+        }
         msg += `─────────────────\n`;
         msg += `👖 *إجمالي الإنتاج:* ${data.totalPants.toLocaleString()} بنطلون\n`;
         msg += `⚡ *معدل الإنتاج:* ${data.perHour} بنطلون/ساعة\n`;
-        msg += `🎯 *نسبة الكفاءة:* ${data.efficiency}%\n`;
         msg += `🛑 *إجمالي التوقفات:* ${data.totalDown}\n`;
         msg += `─────────────────\n`;
         msg += `🏭 *تفاصيل الماكينات:*\n`;
@@ -2926,9 +2939,7 @@
       const modalPrintBtn = document.getElementById('modalPrintBtn');
 
       function openPrintPreview() {
-        if (!window._lastCalculation) {
-          calculateProduction();
-        }
+        calculateProduction();
         if (!window._lastCalculation) return;
 
         // Build exact simulated A4 markup
@@ -2971,9 +2982,7 @@
       });
 
       function triggerPrint() {
-        if (!window._lastCalculation) {
-          calculateProduction();
-        }
+        calculateProduction();
         closePrintPreview();
         setTimeout(() => {
           window.print();
