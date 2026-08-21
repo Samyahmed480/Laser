@@ -8,7 +8,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>حاسبة إنتاج قسم الليزر | لوحة تحكم المصنع</title>
   
-  <!-- Google Fonts: Cairo & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -237,7 +236,7 @@
     .bar-fill { height: 100%; background: var(--laser-gradient); border-radius: 4px; transition: width 0.6s ease; }
     .bar-val { width: 65px; text-align: left; font-family: var(--font-mono); font-weight: 700; color: var(--text); }
 
-    .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .export-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
     .btn-action-outline { height: 42px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; transition: all 0.2s ease; }
     .btn-action-outline:hover { border-color: var(--laser); color: var(--laser); }
     .btn-action-outline.whatsapp { border-color: #25D366; color: #25D366; }
@@ -323,13 +322,11 @@
 </head>
 <body>
 
-  <!-- Toast Notification -->
   <div class="toast-msg" id="toast">
     <span id="toastIcon">✓</span>
     <span id="toastText">تم الحفظ تلقائياً</span>
   </div>
 
-  <!-- Official Print Only Header -->
   <div class="print-header">
     <div class="print-brand-row">
       <div class="print-factory-name">
@@ -354,7 +351,6 @@
     </div>
   </div>
 
-  <!-- Main App Header -->
   <header class="app-header">
     <div class="brand-group">
       <div class="brand-icon">
@@ -369,7 +365,7 @@
     </div>
     <div class="header-actions">
       <button type="button" class="icon-btn" id="themeToggleBtn" title="تبديل المظهر">
-        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -396,7 +392,6 @@
     </div>
   </header>
 
-  <!-- Shift Settings Card -->
   <section class="card" id="shiftSettingsCard">
     <div class="card-header">
       <div class="card-title">
@@ -457,7 +452,6 @@
     </div>
   </section>
 
-  <!-- Machine Quick Filter / Segmented Tabs for Mobile Navigation -->
   <div class="machine-tabs" id="machineTabs">
     <button type="button" class="tab-btn active" data-filter="all">
       الكل <span class="tab-badge">4</span>
@@ -476,12 +470,10 @@
     </button>
   </div>
 
-  <!-- Machines Container -->
   <div id="machinesSection">
     <div id="machinesList"></div>
   </div>
 
-  <!-- Results Section -->
   <section id="resultsContainer">
     <div class="card">
       <div class="card-header">
@@ -585,7 +577,7 @@
       </div>
     </div>
 
-    <div class="export-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="export-grid">
       <button type="button" class="btn-action-outline" id="previewReportBtn" style="border-color: var(--laser); color: var(--laser);">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -621,7 +613,6 @@
     </div>
   </section>
 
-  <!-- Sticky Bottom Action Bar -->
   <div class="bottom-action-bar">
     <button type="button" class="btn-main-calc" id="calcBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -646,30 +637,21 @@
     </button>
   </div>
 
-  <!-- Live In-App Print Preview Modal -->
   <div class="modal-backdrop" id="previewModal">
     <div class="preview-modal-container">
       <div class="preview-modal-header">
-        <div class="preview-modal-title">
-          👁️ معاينة تقرير الوردية (نموذج A4)
-        </div>
+        <div class="preview-modal-title">👁️ معاينة تقرير الوردية (نموذج A4)</div>
         <div class="preview-modal-actions">
-          <button type="button" class="btn-preview-action print" id="modalPrintBtn">
-            🖨️ طباعة الآن / حفظ PDF
-          </button>
-          <button type="button" class="btn-preview-action close" id="closePreviewBtn">
-            ✕ إغلاق
-          </button>
+          <button type="button" class="btn-preview-action print" id="modalPrintBtn">🖨️ طباعة الآن / حفظ PDF</button>
+          <button type="button" class="btn-preview-action close" id="closePreviewBtn">✕ إغلاق</button>
         </div>
       </div>
-      
       <div class="preview-modal-body">
         <div class="a4-preview-sheet" id="a4PreviewSheet"></div>
       </div>
     </div>
   </div>
 
-  <!-- Confirmation Modal for Reset -->
   <div class="modal-backdrop" id="resetModal">
     <div class="modal-box">
       <div class="modal-icon">⚠️</div>
@@ -682,7 +664,6 @@
     </div>
   </div>
 
-  <!-- History Modal -->
   <div class="modal-backdrop" id="historyModal">
     <div class="modal-box" style="max-width: 480px; text-align: right;">
       <div class="modal-icon">📅</div>
@@ -695,12 +676,11 @@
     </div>
   </div>
 
-  <!-- JavaScript Logic -->
   <script>
     (function() {
       'use strict';
 
-      const STORAGE_KEY = 'laser_production_pro_v6';
+      const STORAGE_KEY = 'laser_production_pro_v7';
       const THEME_KEY = 'laser_app_theme';
       const MACHINE_DEFAULTS = [0, 0, 0, 0];
       const NUM_MACHINES = 4;
@@ -971,7 +951,15 @@
             autoSave();
           });
 
-          machinesListEl.addEventListener('change', () => {
+          machinesListEl.addEventListener('change', (e) => {
+            // مزامنة الراحة تلقائياً بين جميع الماكينات
+            if (e.target.classList.contains('restFrom')) {
+              const value = e.target.value;
+              document.querySelectorAll('.restFrom').forEach(inp => {
+                if (inp !== e.target) inp.value = value;
+              });
+              showToast('تم مزامنة الراحة مع جميع الماكينات', '🔄', 'success');
+            }
             updateAllSummaries();
             autoSave();
           });
@@ -1090,6 +1078,17 @@
         }
       }
 
+      function getOverlapMins(s1, e1, s2, e2) {
+        if (s1 === null || e1 === null || s2 === null || e2 === null) return 0;
+        let cStart = s1, cEnd = e1;
+        let dStart = s2, dEnd = e2;
+        if (cEnd < cStart) cEnd += 24 * 60;
+        if (dEnd < dStart) dEnd += 24 * 60;
+        const maxStart = Math.max(cStart, dStart);
+        const minEnd = Math.min(cEnd, dEnd);
+        return Math.max(0, minEnd - maxStart);
+      }
+
       function calculateProduction() {
         const startStr = startTimeInput.value;
         const actualEndStr = actualEndTimeInput.value || shiftEndTimeInput.value;
@@ -1149,8 +1148,7 @@
                   const cStart = parseTimeToMinutes(c.cFrom);
                   const cEnd = parseTimeToMinutes(c.cTo);
                   if (cStart !== null && cEnd !== null) {
-                    const overlap = getOverlapMins(cStart, cEnd, restStart, restEnd);
-                    clientDownMins += overlap;
+                    clientDownMins += getOverlapMins(cStart, cEnd, restStart, restEnd);
                   }
                 }
               }
@@ -1163,8 +1161,7 @@
                   const cStart = parseTimeToMinutes(c.cFrom);
                   const cEnd = parseTimeToMinutes(c.cTo);
                   if (cStart !== null && cEnd !== null) {
-                    const overlap = getOverlapMins(cStart, cEnd, gasStart, gasEnd);
-                    clientDownMins += overlap;
+                    clientDownMins += getOverlapMins(cStart, cEnd, gasStart, gasEnd);
                   }
                 }
               }
@@ -1177,8 +1174,7 @@
                   const cStart = parseTimeToMinutes(c.cFrom);
                   const cEnd = parseTimeToMinutes(c.cTo);
                   if (cStart !== null && cEnd !== null) {
-                    const overlap = getOverlapMins(cStart, cEnd, uStart, uEnd);
-                    clientDownMins += overlap;
+                    clientDownMins += getOverlapMins(cStart, cEnd, uStart, uEnd);
                   }
                 }
               }
@@ -1388,20 +1384,8 @@
         };
       }
 
-      function getOverlapMins(s1, e1, s2, e2) {
-        if (s1 === null || e1 === null || s2 === null || e2 === null) return 0;
-        let cStart = s1, cEnd = e1;
-        let dStart = s2, dEnd = e2;
-        if (cEnd < cStart) cEnd += 24 * 60;
-        if (dEnd < dStart) dEnd += 24 * 60;
-        const maxStart = Math.max(cStart, dStart);
-        const minEnd = Math.min(cEnd, dEnd);
-        return Math.max(0, minEnd - maxStart);
-      }
-
       document.getElementById('calcBtn').addEventListener('click', calculateProduction);
 
-      // ============ WHATSAPP SHARE ============
       document.getElementById('shareWhatsappBtn').addEventListener('click', () => {
         calculateProduction();
         const data = window._lastCalculation;
@@ -1437,7 +1421,6 @@
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
       });
 
-      // ============ EXPORT EXCEL ============
       document.getElementById('exportExcelBtn').addEventListener('click', () => {
         calculateProduction();
         const data = window._lastCalculation;
@@ -1470,7 +1453,6 @@
         showToast('تم تصدير التقرير CSV بنجاح', '📥', 'success');
       });
 
-      // ============ PRINT PREVIEW & PRINT ============
       const previewModal = document.getElementById('previewModal');
       const a4PreviewSheet = document.getElementById('a4PreviewSheet');
       const quickPreviewBtn = document.getElementById('quickPreviewBtn');
@@ -1514,7 +1496,6 @@
       document.getElementById('printReportBtn').addEventListener('click', triggerPrint);
       if (modalPrintBtn) modalPrintBtn.addEventListener('click', triggerPrint);
 
-      // ============ AUTO-SAVE & LOAD ============
       function autoSave() {
         try {
           const dateKey = shiftDateInput?.value || new Date().toISOString().split('T')[0];
@@ -1594,7 +1575,6 @@
         } catch (e) { console.error('Error loading state:', e); return false; }
       }
 
-      // ============ HISTORY MODAL ============
       const historyBtn = document.getElementById('historyBtn');
       const closeHistoryBtn = document.getElementById('closeHistoryBtn');
       const historyList = document.getElementById('historyList');
@@ -1663,7 +1643,6 @@
         }
       }
 
-      // ============ RESET ============
       const resetBtn = document.getElementById('resetBtn');
       const cancelResetBtn = document.getElementById('cancelResetBtn');
       const confirmResetBtn = document.getElementById('confirmResetBtn');
@@ -1690,7 +1669,6 @@
         showToast('تم تفريغ بيانات الوردية بنجاح', '🧹', 'success');
       });
 
-      // ============ INIT ============
       if (shiftDateInput && !shiftDateInput.value) {
         shiftDateInput.value = new Date().toISOString().split('T')[0];
       }
